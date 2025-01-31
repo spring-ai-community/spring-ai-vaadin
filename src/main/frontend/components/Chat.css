@@ -4,6 +4,7 @@
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  position: relative;
 }
 
 .vaadin-chat-component vaadin-scroller {
@@ -98,4 +99,36 @@
   width: 100%;
   max-width: var(--chat-max-width);
   margin: 0 auto;
+}
+
+.vaadin-chat-component .drop-curtain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--lumo-font-size-xl);
+  color: var(--lumo-contrast-80pct);
+  position: absolute;
+  inset: 0;
+  background: var(--lumo-shade-20pct);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.vaadin-chat-component.dz-drag-hover .drop-curtain {
+  opacity: 1;
+}
+
+.vaadin-chat-component .dropzone-previews {
+  background-color: var(--lumo-contrast-10pct);
+  border-radius: var(--lumo-border-radius-l);
+}
+
+.vaadin-chat-component .dropzone-previews .dz-progress {
+  display: none !important;
+}
+
+.vaadin-chat-component .dropzone-previews [data-dz-thumbnail] {
+  border-radius: var(--lumo-border-radius-l);
 }
