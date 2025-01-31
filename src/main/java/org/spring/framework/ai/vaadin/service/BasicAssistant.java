@@ -1,4 +1,4 @@
-package org.spring.framework.ai.vaadin.chat.service;
+package org.spring.framework.ai.vaadin.service;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;

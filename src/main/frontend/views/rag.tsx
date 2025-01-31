@@ -20,6 +20,11 @@ export default function RAGView() {
     const [systemMessage, setSystemMessage] = useState<string>('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [filesInContext, setFilesInContext] = useState<string[]>([]);
+
+    useEffect(() => {
+        RagAssistant.getFilesInContext().then(setFilesInContext);
+    }, []);
 
     async function resetChat() {
         setMessages([]);
@@ -92,6 +97,12 @@ export default function RAGView() {
             <Dialog opened={settingsOpen} onClosed={handleSettingsClose}>
                 <div className="flex flex-col gap-s">
                     <h3>RAG data sources</h3>
+
+                    <ul>
+                        {filesInContext.map(file => (
+                            <li key={file}>{file}</li>
+                        ))}
+                    </ul>
 
                     <Upload 
                         maxFiles={10}
