@@ -1,10 +1,11 @@
 import {AppLayout, Icon, SideNav, SideNavItem} from "@vaadin/react-components";
-import {NavLink, Outlet, useNavigate} from "react-router-dom";
+import {NavLink, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {createMenuItems} from "@vaadin/hilla-file-router/runtime.js";
 import {useEffect} from "react";
 
 export default function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     function onVisualViewportChange() {
