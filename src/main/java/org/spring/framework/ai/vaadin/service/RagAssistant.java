@@ -5,7 +5,11 @@ import com.vaadin.hilla.BrowserCallable;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
+import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
 import reactor.core.publisher.Flux;
 
@@ -37,18 +41,39 @@ public class RagAssistant {
         chatClient = builder
             .defaultAdvisors(
                 new MessageChatMemoryAdvisor(chatMemory),
-                new QuestionAnswerAdvisor(vectorStore)
+
+                // Define RAG pipeline
+                // See https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html#modules
+                RetrievalAugmentationAdvisor.builder()
+                    .queryTransformers(
+                        // Rewrite the query for better search results
+                        RewriteQueryTransformer.builder()
+                            .chatClientBuilder(builder.build().mutate())
+                            .build()
+                    )
+                    // Allow empty context (so you can try the assistant without context and compare)
+                    .queryAugmenter(ContextualQueryAugmenter.builder()
+                        .allowEmptyContext(true)
+                        .build())
+                    // Use the vector store to retrieve documents
+                    .documentRetriever(
+                        VectorStoreDocumentRetriever.builder()
+                            .similarityThreshold(0.50)
+                            .vectorStore(vectorStore)
+                            .build())
+                    .build()
             )
             .build();
     }
 
     public Flux<String> stream(String chatId, String systemMessage, String userMessage) {
 
-        return chatClient.prompt()
-            .user(userMessage)
-            .advisors(a -> a
+        return chatClient
+            .prompt()
+            .user(userMessage).advisors(a -> a
                 .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
-                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20))
+                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20)
+            )
             .stream()
             .content();
     }

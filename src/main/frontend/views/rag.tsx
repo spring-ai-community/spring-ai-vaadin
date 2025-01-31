@@ -23,7 +23,7 @@ export default function RAGView() {
     const [filesInContext, setFilesInContext] = useState<string[]>([]);
 
     useEffect(() => {
-        RagAssistant.getFilesInContext().then(setFilesInContext);
+        getContextFiles();
     }, []);
 
     async function resetChat() {
@@ -57,17 +57,17 @@ export default function RAGView() {
             .onComplete(() => setWorking(false))
     }
 
-    const handleSettingsOpen = () => {
+    function handleSettingsOpen() {
         setSettingsOpen(true);
-    };
+    }
 
-    const handleSettingsClose = () => {
+    function handleSettingsClose() {
         setSettingsOpen(false);
-    };
+    }
 
-    const handleSystemMessageChange = (event: any) => {
-        setSystemMessage(event.target.value);
-    };
+    function getContextFiles() {
+        return RagAssistant.getFilesInContext().then(setFilesInContext);
+    }
 
     return (
         <div className="main-layout flex flex-col">
@@ -109,8 +109,9 @@ export default function RAGView() {
                         maxFileSize={10 * 1024 * 1024}
                         accept=".txt,.pdf,.md,.doc,.docx"
                         target="/api/upload"
+                        onUploadSuccess={() => getContextFiles()}
                     />
-                    <Button onClick={handleSettingsClose} className="self-start" theme="primary">Save</Button>
+                    <Button onClick={handleSettingsClose} className="self-start" theme="primary">Close</Button>
                 </div>
             </Dialog>
         </div>
