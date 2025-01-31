@@ -1,4 +1,4 @@
 @NonNullApi
-package org.spring.framework.ai.vaadin.chat.service;
+package org.spring.framework.ai.vaadin.service;
 
 import org.springframework.lang.NonNullApi;

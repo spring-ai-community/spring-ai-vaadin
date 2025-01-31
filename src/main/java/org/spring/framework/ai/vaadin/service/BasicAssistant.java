@@ -14,7 +14,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
 @BrowserCallable
 @AnonymousAllowed
-public class Assistant {
+public class BasicAssistant {
 
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
@@ -24,7 +24,7 @@ public class Assistant {
         Always give example code snippets when explaining code.
         """;
 
-    public Assistant(ChatMemory chatMemory, ChatClient.Builder builder) {
+    public BasicAssistant(ChatMemory chatMemory, ChatClient.Builder builder) {
         this.chatMemory = chatMemory;
 
         chatClient = builder

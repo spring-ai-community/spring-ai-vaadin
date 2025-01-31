@@ -1,21 +1,20 @@
 import {useEffect, useState} from "react";
 import {Chat, Message} from "Frontend/components/Chat";
-import {Button, Icon, Tooltip, Dialog, TextArea} from "@vaadin/react-components";
+import {Button, Icon, Tooltip, Dialog, TextArea, Upload} from "@vaadin/react-components";
+import {RagAssistant} from "Frontend/generated/endpoints";
 import {nanoid} from "nanoid";
 import "@vaadin/icons";
 import "@vaadin/vaadin-lumo-styles/icons";
-import "./index.css";
-import {ViewConfig} from "@vaadin/hilla-file-router/types.js";
-import {BasicAssistant} from "Frontend/generated/endpoints";
+import { ViewConfig } from "@vaadin/hilla-file-router/types.js";
 
 export const config: ViewConfig = {
-    title: 'Basic AI Chat',
+    title: 'RAG Chat',
     menu: {
-        order: 1,
+        order: 2,
     }
 }
 
-export default function VaadinDocsAssistant() {
+export default function RAGView() {
     const [working, setWorking] = useState(false);
     const [chatId, setChatId] = useState(nanoid());
     const [systemMessage, setSystemMessage] = useState<string>('');
@@ -24,7 +23,7 @@ export default function VaadinDocsAssistant() {
 
     async function resetChat() {
         setMessages([]);
-        await BasicAssistant.clearChatMemory(chatId);
+        await RagAssistant.clearChatMemory(chatId);
         setChatId(nanoid());
     }
 
@@ -41,7 +40,7 @@ export default function VaadinDocsAssistant() {
         setMessages(msgs => [...msgs, {role: 'user', content: userMessage}]);
 
         let first = true;
-        BasicAssistant.stream(chatId, systemMessage, userMessage).onNext(token => {
+        RagAssistant.stream(chatId, systemMessage, userMessage).onNext(token => {
             if (first && token) {
                 setMessages(msgs => [...msgs, {role: 'assistant', content: token}]);
                 first = false;
@@ -69,8 +68,8 @@ export default function VaadinDocsAssistant() {
         <div className="main-layout flex flex-col">
             <header className="flex gap-s items-center px-m">
                 <h1 className="text-l flex-grow flex items-center gap-m">
-                    <span className="pr-s">🌱</span>
-                    <span>Spring AI Assistant</span>
+                    <span className="pr-s">🔍</span>
+                    <span>Retrieval-Augmented Generation</span>
                 </h1>
 
                 <Button onClick={resetChat} theme="icon small contrast tertiary">
@@ -92,15 +91,13 @@ export default function VaadinDocsAssistant() {
 
             <Dialog opened={settingsOpen} onClosed={handleSettingsClose}>
                 <div className="flex flex-col gap-s">
-                    <h3>Settings</h3>
-                    <TextArea
-                        label="System Message"
-                        value={systemMessage}
-                        onChange={handleSystemMessageChange}
-                        style={{
-                            width: '500px',
-                            height: '100px'
-                        }}
+                    <h3>RAG data sources</h3>
+
+                    <Upload 
+                        maxFiles={10}
+                        maxFileSize={10 * 1024 * 1024}
+                        accept=".txt,.pdf,.md,.doc,.docx"
+                        target="/api/upload"
                     />
                     <Button onClick={handleSettingsClose} className="self-start" theme="primary">Save</Button>
                 </div>
