@@ -29,7 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-ai.version>1.0.0-M5</spring-ai.version>
-		<vaadin.version>24.6.2</vaadin.version>
+		<vaadin.version>24.7.0.alpha6</vaadin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -86,6 +86,14 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+		</repository>
+
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<id>vaadin-prereleases</id>
+			<url>https://maven.vaadin.com/vaadin-prereleases</url>
 		</repository>
 	</repositories>
 

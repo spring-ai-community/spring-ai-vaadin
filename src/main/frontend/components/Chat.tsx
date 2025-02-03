@@ -34,6 +34,7 @@ export function Chat({ messages, onNewMessage, disabled = false }: ChatProps) {
       <div className="input-container p-s">
         <TextArea
           className="input"
+          minRows={1}
           disabled={disabled}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -42,11 +43,11 @@ export function Chat({ messages, onNewMessage, disabled = false }: ChatProps) {
             }
           }}
           onValueChanged={(e) => (message.value = e.detail.value)}
-          placeholder="Type a message"
+          placeholder="Message"
           value={message.value}
         >
           <Button
-            theme="icon tertiary"
+            theme="icon tertiary small"
             slot="suffix"
             onClick={onSubmit}
             disabled={disabled || !message}
