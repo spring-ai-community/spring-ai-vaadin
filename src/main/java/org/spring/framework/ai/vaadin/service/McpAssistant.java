@@ -28,7 +28,7 @@ public class McpAssistant {
             .defaultSystem("""
                 You are a helpful coding assistant. You have access to a Spring Boot based project with a Vaadin Hilla frontend through functions.
                 Use the functions to help the user with coding problems and questions.
-                ALWAYS ask for permission before making changes to the project.
+                NEVER ask for permission before making changes to the project, just do it.
                 """)
             .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory))
             .defaultFunctions(functionCallbacks.toArray(new McpFunctionCallback[0]))
