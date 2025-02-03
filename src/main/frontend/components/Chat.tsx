@@ -1,6 +1,8 @@
 import ChatMessage from "Frontend/components/ChatMessage";
-import {MessageInput, Scroller} from "@vaadin/react-components";
+import { Button, Icon, Scroller, TextArea } from "@vaadin/react-components";
 import "./Chat.css";
+import send from "./send.svg?url";
+import { useSignal } from "@vaadin/hilla-react-signals";
 
 interface ChatProps {
   messages: Message[];
@@ -9,23 +11,50 @@ interface ChatProps {
 }
 
 export interface Message {
-  role: 'assistant' | 'user';
+  role: "assistant" | "user";
   content: string;
 }
 
 export function Chat({ messages, onNewMessage, disabled = false }: ChatProps) {
+  const message = useSignal("");
+
+  function onSubmit() {
+    onNewMessage(message.value);
+    message.value = "";
+  }
 
   return (
     <div className="vaadin-chat-component">
       <Scroller className="flex-grow">
-        {messages.map((message, index) => <ChatMessage message={message} key={index} />)}
+        {messages.map((message, index) => (
+          <ChatMessage message={message} key={index} />
+        ))}
       </Scroller>
 
-      <MessageInput
-        disabled={disabled}
-        className="p-s"
-        style={{ '--mask-image': 'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="black"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>\')' }}
-        onSubmit={e => onNewMessage(e.detail.value)} />
+      <div className="input-container p-s">
+        <TextArea
+          className="input"
+          disabled={disabled}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              onSubmit();
+            }
+          }}
+          onValueChanged={(e) => (message.value = e.detail.value)}
+          placeholder="Type a message"
+          value={message.value}
+        >
+          <Button
+            theme="icon tertiary"
+            slot="suffix"
+            onClick={onSubmit}
+            disabled={disabled || !message}
+          >
+            <Icon src={send} />
+          </Button>
+        </TextArea>
+      </div>
     </div>
   );
 }
