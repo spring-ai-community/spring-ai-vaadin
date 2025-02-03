@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Chat, Message} from "Frontend/components/Chat";
-import {Button, Icon, Tooltip, Dialog, TextArea, Upload} from "@vaadin/react-components";
+import {Button, Icon, Tooltip, Dialog, Upload, UploadElement} from "@vaadin/react-components";
 import {RagAssistant} from "Frontend/generated/endpoints";
 import {nanoid} from "nanoid";
 import "@vaadin/icons";
@@ -109,7 +109,11 @@ export default function RAGView() {
                         maxFileSize={10 * 1024 * 1024}
                         accept=".txt,.pdf,.md,.doc,.docx"
                         target="/api/upload"
-                        onUploadSuccess={() => getContextFiles()}
+                        onUploadSuccess={e => {
+                            getContextFiles();
+                            // Clear the file input
+                            (e.target as UploadElement).files=[];
+                        }}
                     />
                     <Button onClick={handleSettingsClose} className="self-start" theme="primary">Close</Button>
                 </div>
