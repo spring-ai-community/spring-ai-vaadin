@@ -4,7 +4,6 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
@@ -33,7 +32,8 @@ public class RagAssistant {
         ChatMemory chatMemory,
         ChatClient.Builder builder,
         VectorStore vectorStore,
-        RagContextService ragContextService) {
+        RagContextService ragContextService
+    ) {
         this.ragContextService = ragContextService;
         this.chatMemory = chatMemory;
         this.vectorStore = vectorStore;
@@ -66,8 +66,7 @@ public class RagAssistant {
             .build();
     }
 
-    public Flux<String> stream(String chatId, String systemMessage, String userMessage) {
-
+    public Flux<String> stream(String chatId, String userMessage) {
         return chatClient
             .prompt()
             .user(userMessage).advisors(a -> a
@@ -80,10 +79,6 @@ public class RagAssistant {
 
     public List<String> getFilesInContext() {
         return ragContextService.getFilesInContext();
-    }
-
-    public void clearChatMemory(String chatId) {
-        chatMemory.clear(chatId);
     }
 
 }

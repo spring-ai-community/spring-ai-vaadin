@@ -6,7 +6,7 @@ import "@vaadin/icons";
 import "@vaadin/vaadin-lumo-styles/icons";
 import "./index.css";
 import {ViewConfig} from "@vaadin/hilla-file-router/types.js";
-import {BasicAssistant} from "Frontend/generated/endpoints";
+import {BasicAssistant, ChatMemoryService} from "Frontend/generated/endpoints";
 
 export const config: ViewConfig = {
     title: 'Basic AI Chat',
@@ -24,7 +24,7 @@ export default function VaadinDocsAssistant() {
 
     async function resetChat() {
         setMessages([]);
-        await BasicAssistant.clearChatMemory(chatId);
+        await ChatMemoryService.clearChatMemory(chatId);
         setChatId(nanoid());
     }
 

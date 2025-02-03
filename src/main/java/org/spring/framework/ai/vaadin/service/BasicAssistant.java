@@ -45,7 +45,4 @@ public class BasicAssistant {
             .content();
     }
 
-    public void clearChatMemory(String chatId) {
-        chatMemory.clear(chatId);
-    }
 }

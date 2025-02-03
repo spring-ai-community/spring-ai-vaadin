@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Chat, Message} from "Frontend/components/Chat";
 import {Button, Icon, Tooltip, Dialog, Upload, UploadElement} from "@vaadin/react-components";
-import {RagAssistant} from "Frontend/generated/endpoints";
+import {ChatMemoryService, RagAssistant} from "Frontend/generated/endpoints";
 import {nanoid} from "nanoid";
 import "@vaadin/icons";
 import "@vaadin/vaadin-lumo-styles/icons";
@@ -17,7 +17,6 @@ export const config: ViewConfig = {
 export default function RAGView() {
     const [working, setWorking] = useState(false);
     const [chatId, setChatId] = useState(nanoid());
-    const [systemMessage, setSystemMessage] = useState<string>('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [filesInContext, setFilesInContext] = useState<string[]>([]);
@@ -28,7 +27,7 @@ export default function RAGView() {
 
     async function resetChat() {
         setMessages([]);
-        await RagAssistant.clearChatMemory(chatId);
+        await ChatMemoryService.clearChatMemory(chatId);
         setChatId(nanoid());
     }
 
@@ -45,7 +44,7 @@ export default function RAGView() {
         setMessages(msgs => [...msgs, {role: 'user', content: userMessage}]);
 
         let first = true;
-        RagAssistant.stream(chatId, systemMessage, userMessage).onNext(token => {
+        RagAssistant.stream(chatId, userMessage).onNext(token => {
             if (first && token) {
                 setMessages(msgs => [...msgs, {role: 'assistant', content: token}]);
                 first = false;
