@@ -51,6 +51,9 @@
     "@vitejs/plugin-react": "4.3.4",
     "async": "3.2.6",
     "glob": "11.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.4.2",
     "rollup-plugin-brotli": "3.1.0",
     "rollup-plugin-visualizer": "5.14.0",
     "strip-css-comments": "5.0.0",
@@ -120,7 +123,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "7659bb142e7a86f9de36a74bb670a351d65a5b79f26e35b3416d1f2bd8de29eb"
+    "hash": "4c33d8003e8f1f5f8d9ac6418398f7a1b1c91f7bc5cd74df41bbb952d3b19dbe"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -150,5 +153,13 @@
     "react-markdown": "$react-markdown",
     "rehype-highlight": "$rehype-highlight",
     "react-router": "$react-router"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
+  "scripts": {
+    "prepare": "husky"
   }
 }

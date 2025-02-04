@@ -29,11 +29,6 @@
       "Frontend/*": ["*"]
     }
   },
-  "include": [
-    "src/main/frontend/**/*",
-    "types.d.ts"
-  ],
-  "exclude": [
-    "src/main/frontend/generated/jar-resources/**"
-  ]
+  "include": ["src/main/frontend/**/*", "types.d.ts"],
+  "exclude": ["src/main/frontend/generated/jar-resources/**"]
 }

@@ -1,2 +1,3 @@
 # spring-ai-vaadin
-Vaadin UIs for Spring AI 
+
+Vaadin UIs for Spring AI

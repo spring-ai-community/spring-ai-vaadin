@@ -1,12 +1,7 @@
-import {
-  AppLayout,
-  Icon,
-  SideNav,
-  SideNavItem,
-} from "@vaadin/react-components";
-import { Outlet, useLocation, useNavigate } from "react-router";
-import { createMenuItems } from "@vaadin/hilla-file-router/runtime.js";
-import { useEffect } from "react";
+import { AppLayout, Icon, SideNav, SideNavItem } from '@vaadin/react-components';
+import { Outlet, useLocation, useNavigate } from 'react-router';
+import { createMenuItems } from '@vaadin/hilla-file-router/runtime.js';
+import { useEffect } from 'react';
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -24,10 +19,8 @@ export default function Layout() {
 
     window.visualViewport?.addEventListener('resize', onVisualViewportChange);
 
-    return () =>
-      window.visualViewport?.removeEventListener('resize', onVisualViewportChange);
+    return () => window.visualViewport?.removeEventListener('resize', onVisualViewportChange);
   }, []);
-
 
   return (
     <AppLayout>
@@ -41,7 +34,7 @@ export default function Layout() {
           ))}
         </SideNav>
       </div>
-      <Outlet/>
+      <Outlet />
     </AppLayout>
   );
 }

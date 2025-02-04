@@ -36,7 +36,7 @@
 
 .vaadin-chat-component vaadin-scroller::after {
   display: block;
-  content: "";
+  content: '';
   scroll-snap-align: end;
   min-height: 1px;
 }

@@ -16,7 +16,7 @@ declare module 'csstype' {
   }
 }
 
-declare module "*.svg?url" {
+declare module '*.svg?url' {
   const value: string;
   export = value;
 }

@@ -1,8 +1,8 @@
-import ChatMessage from "Frontend/components/ChatMessage";
-import { Button, Icon, Scroller, TextArea } from "@vaadin/react-components";
-import "./Chat.css";
-import send from "./send.svg?url";
-import { useSignal } from "@vaadin/hilla-react-signals";
+import ChatMessage from 'Frontend/components/ChatMessage';
+import { Button, Icon, Scroller, TextArea } from '@vaadin/react-components';
+import './Chat.css';
+import send from './send.svg?url';
+import { useSignal } from '@vaadin/hilla-react-signals';
 
 interface ChatProps {
   messages: Message[];
@@ -11,16 +11,16 @@ interface ChatProps {
 }
 
 export interface Message {
-  role: "assistant" | "user";
+  role: 'assistant' | 'user';
   content: string;
 }
 
 export function Chat({ messages, onNewMessage, disabled = false }: ChatProps) {
-  const message = useSignal("");
+  const message = useSignal('');
 
   function onSubmit() {
     onNewMessage(message.value);
-    message.value = "";
+    message.value = '';
   }
 
   return (
@@ -37,21 +37,15 @@ export function Chat({ messages, onNewMessage, disabled = false }: ChatProps) {
           minRows={1}
           disabled={disabled}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
+            if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
               onSubmit();
             }
           }}
           onValueChanged={(e) => (message.value = e.detail.value)}
           placeholder="Message"
-          value={message.value}
-        >
-          <Button
-            theme="icon tertiary small"
-            slot="suffix"
-            onClick={onSubmit}
-            disabled={disabled || !message}
-          >
+          value={message.value}>
+          <Button theme="icon tertiary small" slot="suffix" onClick={onSubmit} disabled={disabled || !message}>
             <Icon src={send} />
           </Button>
         </TextArea>
