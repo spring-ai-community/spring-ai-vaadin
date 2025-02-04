@@ -14,9 +14,17 @@ interface ChatProps {
   disabled?: boolean;
 }
 
+export interface Attachment {
+  type: 'image' | 'document';
+  key: string;
+  fileName: string;
+  url: string;
+}
+
 export interface Message {
   role: 'assistant' | 'user';
   content: string;
+  attachments?: Attachment[];
 }
 
 export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: ChatProps) {
@@ -24,7 +32,10 @@ export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: 
   const dropzone = useSignal<Dropzone>();
 
   function onSubmit() {
-    onNewMessage(message.value, dropzone.value?.files);
+    onNewMessage(
+      message.value,
+      dropzone.value?.files.filter((file) => file.accepted),
+    );
     message.value = '';
     dropzone.value?.removeAllFiles();
   }

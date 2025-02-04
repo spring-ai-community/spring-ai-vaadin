@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Chat, Message } from 'Frontend/components/Chat';
+import { Attachment, Chat, Message } from 'Frontend/components/Chat';
 import { Button, Icon, Tooltip, Dialog, TextArea } from '@vaadin/react-components';
 import { nanoid } from 'nanoid';
 import '@vaadin/icons';
@@ -38,15 +38,25 @@ export default function VaadinDocsAssistant() {
 
   function getCompletion(userMessage: string, attachments?: File[]) {
     setWorking(true);
-    setMessages((msgs) => [...msgs, { role: 'user', content: userMessage }]);
+
+    const uploadedAttachments = (attachments || []).filter((file) => '__mediaName' in file);
+
+    const messageAttachments: Attachment[] = uploadedAttachments.map((file) => {
+      const isImage = file.type.startsWith('image/');
+      return {
+        key: file.__mediaName as string,
+        fileName: file.name,
+        type: isImage ? 'image' : 'document',
+        url: isImage ? (file as any).dataURL : undefined,
+      };
+    });
+
+    setMessages((msgs) => [...msgs, { role: 'user', content: userMessage, attachments: messageAttachments }]);
+
+    const attachmentMediaNames = uploadedAttachments.map((file) => file.__mediaName as string);
 
     let first = true;
-    BasicAssistant.stream(
-      chatId,
-      systemMessage,
-      userMessage,
-      (attachments || []).filter((file) => '__mediaName' in file).map((file) => file.__mediaName as string),
-    )
+    BasicAssistant.stream(chatId, systemMessage, userMessage, attachmentMediaNames)
       .onNext((token) => {
         if (first && token) {
           setMessages((msgs) => [...msgs, { role: 'assistant', content: token }]);
