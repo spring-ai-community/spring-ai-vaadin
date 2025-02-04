@@ -36,12 +36,17 @@ export default function VaadinDocsAssistant() {
     });
   }
 
-  function getCompletion(userMessage: string) {
+  function getCompletion(userMessage: string, attachments?: File[]) {
     setWorking(true);
     setMessages((msgs) => [...msgs, { role: 'user', content: userMessage }]);
 
     let first = true;
-    BasicAssistant.stream(chatId, systemMessage, userMessage)
+    BasicAssistant.stream(
+      chatId,
+      systemMessage,
+      userMessage,
+      (attachments || []).filter((file) => '__mediaName' in file).map((file) => file.__mediaName as string),
+    )
       .onNext((token) => {
         if (first && token) {
           setMessages((msgs) => [...msgs, { role: 'assistant', content: token }]);
@@ -85,7 +90,24 @@ export default function VaadinDocsAssistant() {
         </Button>
       </header>
 
-      <Chat messages={messages} onNewMessage={getCompletion} disabled={working} />
+      <Chat
+        messages={messages}
+        onNewMessage={getCompletion}
+        onFileAdded={(file) => {
+          // TODO: Temporary workaround to upload files to the server
+          const formData = new FormData();
+          formData.append('file', file);
+
+          fetch('/api/attachment', {
+            method: 'POST',
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => ((file as any).__mediaName = data.name))
+            .catch((error) => console.error('Error uploading file:', error));
+        }}
+        disabled={working}
+      />
 
       <Dialog opened={settingsOpen} onClosed={handleSettingsClose}>
         <div className="flex flex-col gap-s">

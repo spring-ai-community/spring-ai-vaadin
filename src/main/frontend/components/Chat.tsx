@@ -36,6 +36,8 @@ export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: 
         previewsContainer: '.dropzone-previews',
         autoProcessQueue: false,
         addRemoveLinks: true,
+        acceptedFiles: 'image/*',
+        dictInvalidFileType: 'Only images are allowed for now',
       });
 
       dropzone.value.on('addedfile', (file) => onFileAdded(file));
