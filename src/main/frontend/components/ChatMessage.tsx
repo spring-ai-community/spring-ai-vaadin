@@ -15,6 +15,21 @@ export default function ChatMessage({ message }: MessageProps) {
         🤖
       </span>
       <div className="message-content">
+        <div className="attachments flex flex-col gap-s">
+          {message.attachments?.map((attachment) => {
+            if (attachment.type === 'image') {
+              return <img key={attachment.key} src={attachment.url} alt={attachment.fileName} />;
+            } else {
+              return (
+                <div key={attachment.key} className="attachment flex gap-s">
+                  <Icon icon="vaadin:file" />
+                  <span>{attachment.fileName}</span>
+                </div>
+              );
+            }
+          })}
+        </div>
+
         <Markdown rehypePlugins={[[rehypeHighlight, { ignoreMissing: true }]]}>{message.content}</Markdown>
       </div>
     </div>
