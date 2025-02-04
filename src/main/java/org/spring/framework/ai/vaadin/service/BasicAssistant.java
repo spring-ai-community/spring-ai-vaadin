@@ -42,12 +42,8 @@ public class BasicAssistant {
     public Flux<String> stream(String chatId, String systemMessage, String userMessage, List<String> attachmentNames) {
         var system = systemMessage.isBlank() ? DEFAULT_SYSTEM : systemMessage;
 
-        var mediaArray = chatAttachments.stream()
-            .filter(media -> attachmentNames.contains(media.getName()))
-            .sorted((a, b) -> Integer.compare(
-                attachmentNames.indexOf(a.getName()), 
-                attachmentNames.indexOf(b.getName()))
-            )
+        var mediaArray = attachmentNames.stream()
+            .flatMap(name -> chatAttachments.stream().filter(media -> media.getName().equals(name)))
             .toArray(Media[]::new);
         
         chatAttachments.clear();
