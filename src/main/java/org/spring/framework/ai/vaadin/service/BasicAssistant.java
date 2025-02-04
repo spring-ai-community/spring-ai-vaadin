@@ -44,6 +44,10 @@ public class BasicAssistant {
 
         var mediaArray = chatAttachments.stream()
             .filter(media -> attachmentNames.contains(media.getName()))
+            .sorted((a, b) -> Integer.compare(
+                attachmentNames.indexOf(a.getName()), 
+                attachmentNames.indexOf(b.getName()))
+            )
             .toArray(Media[]::new);
         
         chatAttachments.clear();
