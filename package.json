@@ -163,6 +163,7 @@
     ]
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "husky"
   }
 }
