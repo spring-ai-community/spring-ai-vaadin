@@ -5,7 +5,7 @@ import send from './send.svg?url';
 import { useSignal } from '@vaadin/hilla-react-signals';
 import Dropzone from 'dropzone';
 import 'dropzone/dist/basic.css';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface ChatProps {
   messages: Message[];
@@ -29,20 +29,20 @@ export interface Message {
 
 export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: ChatProps) {
   const message = useSignal('');
-  const dropzone = useSignal<Dropzone>();
+  const dropzone = useRef<Dropzone>();
 
   function onSubmit() {
     onNewMessage(
       message.value,
-      dropzone.value?.files.filter((file) => file.accepted),
+      dropzone.current?.files.filter((file) => file.accepted),
     );
     message.value = '';
-    dropzone.value?.removeAllFiles();
+    dropzone.current?.removeAllFiles();
   }
 
   useEffect(() => {
     if (onFileAdded) {
-      dropzone.value = new Dropzone('.vaadin-chat-component', {
+      dropzone.current = new Dropzone('.vaadin-chat-component', {
         url: '/file/post',
         previewsContainer: '.dropzone-previews',
         autoProcessQueue: false,
@@ -51,11 +51,11 @@ export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: 
         dictInvalidFileType: 'Only images are allowed for now',
       });
 
-      dropzone.value.on('addedfile', (file) => onFileAdded(file));
+      dropzone.current.on('addedfile', (file) => onFileAdded(file));
     }
 
     return () => {
-      dropzone.value?.destroy();
+      dropzone.current?.destroy();
     };
   }, []);
 
