@@ -18,9 +18,7 @@ interface VoiceControlProps {
   functions: VoiceFunction[];
 }
 
-export function VoiceControl({
-  functions,
-}: VoiceControlProps) {
+export function VoiceControl({ functions }: VoiceControlProps) {
   const [isListening, setIsListening] = useState(false);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const dataChannel = useRef<RTCDataChannel | null>(null);
@@ -31,29 +29,32 @@ export function VoiceControl({
     };
   }, []);
 
-  const handleMessage = useCallback(async (msg: any) => {
-    if (msg.type === 'response.function_call_arguments.done') {
-      const args = JSON.parse(msg.arguments || '{}');
-      const fn = functions.find(f => f.name === msg.name);
-      
-      if (fn) {
-        await fn.execute(args);
-      }
+  const handleMessage = useCallback(
+    async (msg: any) => {
+      if (msg.type === 'response.function_call_arguments.done') {
+        const args = JSON.parse(msg.arguments || '{}');
+        const fn = functions.find((f) => f.name === msg.name);
 
-      // Send function call output
-      if (dataChannel.current) {
-        const event = {
-          type: 'conversation.item.create',
-          item: {
-            type: 'function_call_output',
-            call_id: msg.call_id,
-            output: JSON.stringify({ success: true }),
-          },
-        };
-        dataChannel.current.send(JSON.stringify(event));
+        if (fn) {
+          await fn.execute(args);
+        }
+
+        // Send function call output
+        if (dataChannel.current) {
+          const event = {
+            type: 'conversation.item.create',
+            item: {
+              type: 'function_call_output',
+              call_id: msg.call_id,
+              output: JSON.stringify({ success: true }),
+            },
+          };
+          dataChannel.current.send(JSON.stringify(event));
+        }
       }
-    }
-  }, [functions]);
+    },
+    [functions],
+  );
 
   // Keep track of the latest message handler
   const latestHandleMessage = useRef(handleMessage);
@@ -89,7 +90,7 @@ export function VoiceControl({
 
       dc.addEventListener('open', () => {
         console.log('Data channel opened');
-        
+
         // Set up message handler when data channel opens
         const messageHandler = (ev: MessageEvent) => {
           const msg = JSON.parse(ev.data);
@@ -97,7 +98,7 @@ export function VoiceControl({
           latestHandleMessage.current(msg);
         };
         dc.addEventListener('message', messageHandler);
-        
+
         configureTools();
       });
 
@@ -107,7 +108,7 @@ export function VoiceControl({
 
       const baseUrl = 'https://api.openai.com/v1/realtime';
       const model = 'gpt-4o-realtime-preview-2024-12-17';
-      
+
       const sdpResponse = await fetch(`${baseUrl}?model=${model}`, {
         method: 'POST',
         body: offer.sdp,
@@ -159,8 +160,7 @@ export function VoiceControl({
           } else {
             initializeWebRTC();
           }
-        }}
-      >
+        }}>
         {isListening ? '🎤 Voice Control Active' : '🎤 Enable Voice Control'}
       </Button>
     </div>
