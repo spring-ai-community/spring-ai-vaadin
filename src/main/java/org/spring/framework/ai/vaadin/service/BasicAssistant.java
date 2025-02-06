@@ -7,6 +7,8 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.model.Media;
+import org.springframework.util.MimeType;
+import org.springframework.web.multipart.MultipartFile;
 
 import reactor.core.publisher.Flux;
 
@@ -56,6 +58,12 @@ public class BasicAssistant {
                 .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20))
             .stream()
             .content();
+    }
+
+    public String uploadAttachment(MultipartFile file) {
+        var media = new Media(MimeType.valueOf(file.getContentType()), file.getResource());
+        chatAttachments.add(media);
+        return media.getName();
     }
 
 }

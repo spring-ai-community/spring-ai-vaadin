@@ -15,11 +15,7 @@ export default function ChatMessage({ message, waiting }: MessageProps) {
 
   return (
     <div
-      className={
-        'flex flex-col sm:flex-row gap-m p-m mt-m' +
-        (message.role !== 'assistant' ? ' me' : '') +
-        (waiting ? ' waiting-message' : '')
-      }>
+      className={`flex flex-col sm:flex-row gap-m p-m mt-m ${message.role !== 'assistant' ? 'me' : ''} ${waiting ? 'waiting-message' : ''}`}>
       <span className="text-2xl" hidden={message.role !== 'assistant'}>
         🤖
       </span>

@@ -36,6 +36,11 @@ export default function VaadinDocsAssistant() {
     });
   }
 
+  async function addAttachment(file: File) {
+    const mediaName = await BasicAssistant.uploadAttachment(file);
+    (file as any).__mediaName = mediaName;
+  }
+
   function getCompletion(userMessage: string, attachments?: File[]) {
     setWorking(true);
 
@@ -100,24 +105,7 @@ export default function VaadinDocsAssistant() {
         </Button>
       </header>
 
-      <Chat
-        messages={messages}
-        onNewMessage={getCompletion}
-        onFileAdded={(file) => {
-          // TODO: Temporary workaround to upload files to the server
-          const formData = new FormData();
-          formData.append('file', file);
-
-          fetch('/api/attachment', {
-            method: 'POST',
-            body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => ((file as any).__mediaName = data.name))
-            .catch((error) => console.error('Error uploading file:', error));
-        }}
-        disabled={working}
-      />
+      <Chat messages={messages} onNewMessage={getCompletion} onFileAdded={addAttachment} disabled={working} />
 
       <Dialog opened={settingsOpen} onClosed={handleSettingsClose}>
         <div className="flex flex-col gap-s">
