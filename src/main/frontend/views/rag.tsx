@@ -104,8 +104,11 @@ export default function RAGView() {
             maxFiles={10}
             maxFileSize={10 * 1024 * 1024}
             accept=".txt,.pdf,.md,.doc,.docx"
-            target="/api/upload"
-            onUploadSuccess={(e) => {
+            onUploadRequest={async (e) => {
+              e.preventDefault();
+
+              await RagAssistant.uploadFile(e.detail.file);
+
               getContextFiles();
               // Clear the file input
               (e.target as UploadElement).files = [];

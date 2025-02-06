@@ -12,8 +12,11 @@ import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugment
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.web.multipart.MultipartFile;
+
 import reactor.core.publisher.Flux;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
@@ -92,6 +95,10 @@ public class RagAssistant {
 
     public List<String> getFilesInContext() {
         return ragContextService.getFilesInContext();
+    }
+
+    public void uploadFile(MultipartFile file) throws IOException {
+        ragContextService.addFileToContext(file);
     }
 
 }
