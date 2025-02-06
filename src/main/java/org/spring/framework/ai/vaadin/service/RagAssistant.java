@@ -2,7 +2,6 @@ package org.spring.framework.ai.vaadin.service;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
-import org.spring.framework.ai.vaadin.advisors.DomainAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
@@ -45,12 +44,6 @@ public class RagAssistant {
 
         chatClient = builder
             .defaultAdvisors(
-
-                // Limit the allowed topics to Java, Spring Framework, and Vaadin development
-                new DomainAdvisor(
-                    "Java, Spring Framework, and Vaadin development, including setup, coding, and best practices",
-                    builder.build().mutate().build() // TODO: replace this with a cheaper model as an example
-                ),
 
                 // Absolutely don't let people ask about PHP 😆
                 new SafeGuardAdvisor(List.of("PHP")),
