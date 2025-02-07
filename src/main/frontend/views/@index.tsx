@@ -37,19 +37,19 @@ export default function VaadinDocsAssistant() {
   }
 
   async function addAttachment(file: File) {
-    const mediaName = await BasicAssistant.uploadAttachment(file);
-    (file as any).__mediaName = mediaName;
+    const attachmentId = await BasicAssistant.uploadAttachment(file);
+    (file as any).__attachmentId = attachmentId;
   }
 
   function getCompletion(userMessage: string, attachments?: File[]) {
     setWorking(true);
 
-    const uploadedAttachments = (attachments || []).filter((file) => '__mediaName' in file);
+    const uploadedAttachments = (attachments || []).filter((file) => '__attachmentId' in file);
 
     const messageAttachments: Attachment[] = uploadedAttachments.map((file) => {
       const isImage = file.type.startsWith('image/');
       return {
-        key: file.__mediaName as string,
+        key: file.__attachmentId as string,
         fileName: file.name,
         type: isImage ? 'image' : 'document',
         url: isImage ? (file as any).dataURL : undefined,
@@ -58,10 +58,10 @@ export default function VaadinDocsAssistant() {
 
     setMessages((msgs) => [...msgs, { role: 'user', content: userMessage, attachments: messageAttachments }]);
 
-    const attachmentMediaNames = uploadedAttachments.map((file) => file.__mediaName as string);
+    const attachmentIds = uploadedAttachments.map((file) => file.__attachmentId as string);
 
     let first = true;
-    BasicAssistant.stream(chatId, systemMessage, userMessage, attachmentMediaNames)
+    BasicAssistant.stream(chatId, systemMessage, userMessage, attachmentIds)
       .onNext((token) => {
         if (first && token) {
           setMessages((msgs) => [...msgs, { role: 'assistant', content: token }]);
@@ -105,7 +105,13 @@ export default function VaadinDocsAssistant() {
         </Button>
       </header>
 
-      <Chat messages={messages} onNewMessage={getCompletion} onFileAdded={addAttachment} disabled={working} />
+      <Chat
+        messages={messages}
+        onNewMessage={getCompletion}
+        acceptedFiles="image/*,text/*,application/pdf"
+        onFileAdded={addAttachment}
+        disabled={working}
+      />
 
       <Dialog opened={settingsOpen} onClosed={handleSettingsClose}>
         <div className="flex flex-col gap-s">

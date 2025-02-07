@@ -81,9 +81,16 @@
   border-radius: var(--lumo-border-radius-m);
 }
 
+.vaadin-chat-component .message-content .attachment {
+  border: 1px solid var(--lumo-contrast-10pct);
+  padding: var(--lumo-space-s);
+  border-radius: var(--lumo-border-radius-l);
+}
+
 .vaadin-chat-component .message-content .attachments img {
   max-width: 100%;
   width: 300px;
+  border-radius: var(--lumo-border-radius-l);
 }
 
 .vaadin-chat-component .waiting-message {

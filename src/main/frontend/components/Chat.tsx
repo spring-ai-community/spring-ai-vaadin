@@ -10,6 +10,7 @@ import { useEffect, useRef } from 'react';
 interface ChatProps {
   messages: Message[];
   onNewMessage: (message: string, files?: File[]) => void;
+  acceptedFiles?: string;
   onFileAdded?: (file: File) => void;
   disabled?: boolean;
 }
@@ -27,7 +28,7 @@ export interface Message {
   attachments?: Attachment[];
 }
 
-export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: ChatProps) {
+export function Chat({ messages, onNewMessage, onFileAdded, acceptedFiles, disabled = false }: ChatProps) {
   const message = useSignal('');
   const dropzone = useRef<Dropzone>();
 
@@ -41,17 +42,17 @@ export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: 
   }
 
   useEffect(() => {
-    if (onFileAdded) {
+    if (acceptedFiles) {
       dropzone.current = new Dropzone('.vaadin-chat-component', {
         url: '/file/post',
         previewsContainer: '.dropzone-previews',
         autoProcessQueue: false,
         addRemoveLinks: true,
-        acceptedFiles: 'image/*',
-        dictInvalidFileType: 'Only images are allowed for now',
+        acceptedFiles,
+        maxFilesize: 5,
       });
 
-      dropzone.current.on('addedfile', (file) => onFileAdded(file));
+      dropzone.current.on('addedfile', (file) => onFileAdded?.(file));
     }
 
     return () => {
@@ -101,7 +102,7 @@ export function Chat({ messages, onNewMessage, onFileAdded, disabled = false }: 
             className="dz-message"
             slot="suffix"
             disabled={disabled}
-            hidden={!onFileAdded}>
+            hidden={!acceptedFiles}>
             <Icon icon="vaadin:upload" />
           </Button>
 
