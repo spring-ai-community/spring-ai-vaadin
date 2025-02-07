@@ -11,10 +11,11 @@ import { IssuesService } from 'Frontend/generated/endpoints';
 import { useEffect, useMemo } from 'react';
 
 import { VoiceControl, VoiceFunction } from '../components/VoiceControl';
-import Issue from 'Frontend/generated/org/spring/framework/ai/vaadin/model/Issue';
-import IssueModel from 'Frontend/generated/org/spring/framework/ai/vaadin/model/IssueModel';
-import IssueStatus from 'Frontend/generated/org/spring/framework/ai/vaadin/model/IssueStatus';
+
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import Issue from 'Frontend/generated/org/spring/framework/ai/vaadin/service/IssuesService/Issue';
+import IssueModel from 'Frontend/generated/org/spring/framework/ai/vaadin/service/IssuesService/IssueModel';
+import IssueStatus from 'Frontend/generated/org/spring/framework/ai/vaadin/service/IssuesService/IssueStatus';
 
 export const config: ViewConfig = {
   title: 'Voice Control',

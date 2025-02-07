@@ -2,8 +2,6 @@ package org.spring.framework.ai.vaadin.service;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
-import org.spring.framework.ai.vaadin.model.Issue;
-import org.spring.framework.ai.vaadin.model.IssueStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +9,22 @@ import java.util.List;
 @BrowserCallable
 @AnonymousAllowed
 public class IssuesService {
+
+    public record Issue(
+        Long id,
+        String title,
+        String description,
+        IssueStatus status,
+        String assignee
+    ) {}
+
+    public enum IssueStatus {
+        OPEN,
+        IN_PROGRESS,
+        RESOLVED,
+        CLOSED
+    }
+
 
     private List<Issue> issues = new ArrayList<>();
     private Long nextId = 1L;
