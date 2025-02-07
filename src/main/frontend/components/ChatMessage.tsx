@@ -4,13 +4,16 @@ import 'highlight.js/styles/atom-one-light.css';
 import { Icon } from '@vaadin/react-components';
 import { Message } from './Chat';
 import TypingIndicator from './TypingIndicator.js';
+import Mermaid from './Mermaid.js';
+import CustomMarkdown from './CustomMarkdown.js';
 
 interface MessageProps {
   message: Message;
   waiting?: boolean;
+  renderer?: Parameters<typeof CustomMarkdown>[0]['renderer'];
 }
 
-export default function ChatMessage({ message, waiting }: MessageProps) {
+export default function ChatMessage({ message, waiting, renderer }: MessageProps) {
   const hasAttachments = !!message.attachments?.length;
 
   return (
@@ -39,7 +42,7 @@ export default function ChatMessage({ message, waiting }: MessageProps) {
           </div>
         ) : null}
 
-        <Markdown rehypePlugins={[[rehypeHighlight, { ignoreMissing: true }]]}>{message.content}</Markdown>
+        <CustomMarkdown content={message.content} renderer={renderer} />
       </div>
     </div>
   );

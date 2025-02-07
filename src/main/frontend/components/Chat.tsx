@@ -13,6 +13,7 @@ interface ChatProps {
   acceptedFiles?: string;
   onFileAdded?: (file: File) => void;
   disabled?: boolean;
+  renderer?: Parameters<typeof ChatMessage>[0]['renderer'];
 }
 
 export interface Attachment {
@@ -28,7 +29,7 @@ export interface Message {
   attachments?: Attachment[];
 }
 
-export function Chat({ messages, onNewMessage, onFileAdded, acceptedFiles, disabled = false }: ChatProps) {
+export function Chat({ messages, onNewMessage, onFileAdded, acceptedFiles, renderer, disabled = false }: ChatProps) {
   const message = useSignal('');
   const dropzone = useRef<Dropzone>();
 
@@ -66,7 +67,7 @@ export function Chat({ messages, onNewMessage, onFileAdded, acceptedFiles, disab
     <div className={`vaadin-chat-component dropzone`}>
       <Scroller className="flex-grow">
         {messages.map((message, index) => (
-          <ChatMessage message={message} key={index} />
+          <ChatMessage message={message} key={index} renderer={renderer} />
         ))}
         {waiting ? <ChatMessage waiting message={{ role: 'assistant', content: '' }} /> : null}
       </Scroller>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Attachment, Chat, Message } from 'Frontend/components/Chat';
 import { Button, Icon, Tooltip, Dialog, TextArea } from '@vaadin/react-components';
 import { nanoid } from 'nanoid';
@@ -7,6 +7,7 @@ import '@vaadin/vaadin-lumo-styles/icons';
 import './index.css';
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import { BasicAssistant, ChatMemoryService } from 'Frontend/generated/endpoints';
+import Mermaid from 'Frontend/components/Mermaid.js';
 
 export const config: ViewConfig = {
   title: 'Basic AI Chat',
@@ -86,6 +87,13 @@ export default function VaadinDocsAssistant() {
     setSystemMessage(event.target.value);
   };
 
+  const renderer = useCallback((className = '', content = '') => {
+    if (className.includes('language-mermaid')) {
+      return <Mermaid chart={content} />;
+    }
+    return null;
+  }, []);
+
   return (
     <div className="main-layout flex flex-col">
       <header className="flex gap-s items-center px-m">
@@ -111,6 +119,7 @@ export default function VaadinDocsAssistant() {
         acceptedFiles="image/*,text/*,application/pdf"
         onFileAdded={addAttachment}
         disabled={working}
+        renderer={renderer}
       />
 
       <Dialog opened={settingsOpen} onClosed={handleSettingsClose}>

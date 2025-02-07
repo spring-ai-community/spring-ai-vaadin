@@ -26,6 +26,7 @@
     "dropzone": "^6.0.0-beta.2",
     "highlight.js": "^11.11.1",
     "lit": "3.2.1",
+    "mermaid": "^11.4.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-markdown": "^9.0.3",
@@ -125,7 +126,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "0abd1bea475a7f343fd40402c25ee8617134f47f5137bbf6e51650bbc9d5376a"
+    "hash": "10447d0f43d887943cc09feac64a95c576abf87514633538a7ef910b7a54687b"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -155,7 +156,8 @@
     "react-markdown": "$react-markdown",
     "rehype-highlight": "$rehype-highlight",
     "react-router": "$react-router",
-    "dropzone": "$dropzone"
+    "dropzone": "$dropzone",
+    "mermaid": "$mermaid"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
