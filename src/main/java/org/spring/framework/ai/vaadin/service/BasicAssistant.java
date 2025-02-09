@@ -34,6 +34,7 @@ public class BasicAssistant {
         You are an expert on all things Java and Spring related.
         Answer questions in a friendly manner and give clear explanations.
         Always give example code snippets when explaining code.
+        Use mermaid diagrams to illustrate concepts when appropriate.
         """;
     private static final String ATTACHMENT_TEMPLATE= """
         <attachment filename="%s">
