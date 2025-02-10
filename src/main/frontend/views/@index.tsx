@@ -87,8 +87,8 @@ export default function VaadinDocsAssistant() {
     setSystemMessage(event.target.value);
   };
 
-  const renderer = useCallback((className = '', content = '') => {
-    if (className.includes('language-mermaid')) {
+  const renderer = useCallback((language = '', content = '') => {
+    if (language.includes('mermaid')) {
       return <Mermaid chart={content} />;
     }
     return null;
