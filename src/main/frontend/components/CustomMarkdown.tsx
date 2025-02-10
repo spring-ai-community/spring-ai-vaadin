@@ -5,19 +5,35 @@ import { ReactNode, useMemo } from 'react';
 
 interface Props {
   content: string;
-  renderer?: (className: string, content: string) => ReactNode;
+  renderer?: (language: string, content: string) => ReactNode;
 }
 
 export default function ({ content, renderer }: Props) {
   const components: Components = useMemo(
     () => ({
-      code: function ({ className, children, ...props }) {
+      code: ({ className, children, ...props }) => {
+        if (className && typeof children === 'string' && renderer) {
+          const language = className
+            .split(' ')
+            .find((c) => c.startsWith('language-'))
+            ?.replace('language-', '');
+
+          if (language) {
+            try {
+              const result = renderer(language, children);
+              if (result) {
+                return result;
+              }
+            } catch {
+              // Rendering may fail with incomplete data
+            }
+          }
+        }
+
         return (
-          (className && typeof children === 'string' && renderer?.(className, children)) || (
-            <code className={className} {...props}>
-              {children}
-            </code>
-          )
+          <code className={className} {...props}>
+            {children}
+          </code>
         );
       },
     }),
