@@ -25,8 +25,4 @@ public class AiConfig {
         return SimpleVectorStore.builder(embeddingModel).build();
     }
 
-    @Bean
-    public List<Attachment> chatAttachments() {
-        return new ArrayList<>();
-    }
 }
