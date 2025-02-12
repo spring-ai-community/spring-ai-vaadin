@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Attachment, Chat, Message } from 'Frontend/components/Chat';
+import { Chat } from 'Frontend/components/Chat';
 import { Button, Icon, Tooltip, TextArea, Upload, UploadElement } from '@vaadin/react-components';
 import { nanoid } from 'nanoid';
 import '@vaadin/icons';
@@ -9,16 +9,12 @@ import { Assistant, RagContextService } from 'Frontend/generated/endpoints';
 import Mermaid from 'Frontend/components/Mermaid.js';
 
 export default function SpringAiAssistant() {
-  const [working, setWorking] = useState(false);
   const [chatId, setChatId] = useState(nanoid());
-  const [systemMessage, setSystemMessage] = useState<string>('');
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [filesInContext, setFilesInContext] = useState<string[]>([]);
+  const [systemMessage, setSystemMessage] = useState<string>('');
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   async function resetChat() {
-    setMessages([]);
-    await Assistant.closeChat(chatId);
     setChatId(nanoid());
   }
 
@@ -26,54 +22,8 @@ export default function SpringAiAssistant() {
     getContextFiles();
   }, []);
 
-  function appendToLastMessage(token: string) {
-    setMessages((msgs) => {
-      const lastMessage = msgs[msgs.length - 1];
-      lastMessage.content += token;
-      return [...msgs.slice(0, -1), lastMessage];
-    });
-  }
-
-  async function addAttachment(file: File) {
-    const attachmentId = await Assistant.uploadAttachment(chatId, file);
-    (file as any).__attachmentId = attachmentId;
-  }
-
   function getContextFiles() {
     return RagContextService.getFilesInContext().then(setFilesInContext);
-  }
-
-  function getCompletion(userMessage: string, attachments?: File[]) {
-    setWorking(true);
-
-    const uploadedAttachments = (attachments || []).filter((file) => '__attachmentId' in file);
-
-    const messageAttachments: Attachment[] = uploadedAttachments.map((file) => {
-      const isImage = file.type.startsWith('image/');
-      return {
-        key: file.__attachmentId as string,
-        fileName: file.name,
-        type: isImage ? 'image' : 'document',
-        url: isImage ? (file as any).dataURL : undefined,
-      };
-    });
-
-    setMessages((msgs) => [...msgs, { role: 'user', content: userMessage, attachments: messageAttachments }]);
-
-    const attachmentIds = uploadedAttachments.map((file) => file.__attachmentId as string);
-
-    let first = true;
-    Assistant.stream(chatId, userMessage, { systemMessage, attachmentIds })
-      .onNext((token) => {
-        if (first && token) {
-          setMessages((msgs) => [...msgs, { role: 'assistant', content: token }]);
-          first = false;
-        } else {
-          appendToLastMessage(token);
-        }
-      })
-      .onError(() => setWorking(false))
-      .onComplete(() => setWorking(false));
   }
 
   const toggleSettingsOpen = () => {
@@ -112,12 +62,11 @@ export default function SpringAiAssistant() {
         </header>
 
         <Chat
+          chatId={chatId}
           className="flex-grow"
-          messages={messages}
-          onNewMessage={getCompletion}
+          service={Assistant}
           acceptedFiles="image/*,text/*,application/pdf"
-          onFileAdded={addAttachment}
-          disabled={working}
+          options={{ systemMessage }}
           renderer={renderer}
         />
       </div>

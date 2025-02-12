@@ -5,45 +5,112 @@ import send from './send.svg?url';
 import { useSignal } from '@vaadin/hilla-react-signals';
 import Dropzone from 'dropzone';
 import 'dropzone/dist/basic.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Subscription } from '@vaadin/hilla-frontend';
+import { Assistant } from 'Frontend/generated/endpoints';
+import Message from 'Frontend/generated/org/spring/framework/ai/vaadin/service/AiChatService/Message';
+import Attachment from 'Frontend/generated/org/spring/framework/ai/vaadin/service/AiChatService/Attachment';
+
+// Move these
+interface AiChatServiceOptions {
+  systemMessage: string;
+  attachmentIds: string[];
+}
+
+interface AiChatService {
+  stream(chatId: string, userMessage: string, options: AiChatServiceOptions): Subscription<string>;
+
+  getHistory(chatId: string): Promise<Message[]>;
+
+  closeChat(chatId: string): Promise<void>;
+
+  uploadAttachment(chatId: string, file: File): Promise<string>;
+}
+
+// --
+
+interface ChatOptions {
+  systemMessage: string;
+}
 
 interface ChatProps {
-  messages: Message[];
-  onNewMessage: (message: string, files?: File[]) => void;
+  chatId: string;
+  service: AiChatService;
   acceptedFiles?: string;
-  onFileAdded?: (file: File) => void;
-  disabled?: boolean;
+  options?: ChatOptions;
   renderer?: Parameters<typeof ChatMessage>[0]['renderer'];
   className?: string;
 }
 
-export interface Attachment {
-  type: 'image' | 'document';
-  key: string;
-  fileName: string;
-  url: string;
-}
-
-export interface Message {
-  role: 'assistant' | 'user';
-  content: string;
-  attachments?: Attachment[];
-}
-
 export function Chat({
-  messages,
-  onNewMessage,
-  onFileAdded,
+  chatId,
+  service,
   acceptedFiles,
+  options = { systemMessage: '' },
   renderer,
-  disabled = false,
   className,
 }: ChatProps) {
+  const [working, setWorking] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
   const message = useSignal('');
   const dropzone = useRef<Dropzone>();
 
+  useEffect(() => {
+    service.getHistory(chatId).then(setMessages);
+    return () => {
+      // Close the previous chat when a new one is started
+      service.closeChat(chatId);
+    };
+  }, [chatId]);
+
+  function appendToLastMessage(token: string) {
+    setMessages((msgs) => {
+      const lastMessage = msgs[msgs.length - 1];
+      lastMessage.content += token;
+      return [...msgs.slice(0, -1), lastMessage];
+    });
+  }
+
+  async function addAttachment(file: File) {
+    const attachmentId = await Assistant.uploadAttachment(chatId, file);
+    (file as any).__attachmentId = attachmentId;
+  }
+
+  function getCompletion(userMessage: string, attachments?: File[]) {
+    setWorking(true);
+
+    const uploadedAttachments = (attachments || []).filter((file) => '__attachmentId' in file);
+
+    const messageAttachments: Attachment[] = uploadedAttachments.map((file) => {
+      const isImage = file.type.startsWith('image/');
+      return {
+        key: file.__attachmentId as string,
+        fileName: file.name,
+        type: isImage ? 'image' : 'document',
+        url: isImage ? (file as any).dataURL : undefined,
+      };
+    });
+
+    setMessages((msgs) => [...msgs, { role: 'user', content: userMessage, attachments: messageAttachments }]);
+
+    const attachmentIds = uploadedAttachments.map((file) => file.__attachmentId as string);
+
+    let first = true;
+    Assistant.stream(chatId, userMessage, { systemMessage: options?.systemMessage, attachmentIds })
+      .onNext((token) => {
+        if (first && token) {
+          setMessages((msgs) => [...msgs, { role: 'assistant', content: token }]);
+          first = false;
+        } else {
+          appendToLastMessage(token);
+        }
+      })
+      .onError(() => setWorking(false))
+      .onComplete(() => setWorking(false));
+  }
+
   function onSubmit() {
-    onNewMessage(
+    getCompletion(
       message.value,
       dropzone.current?.files.filter((file) => file.accepted),
     );
@@ -62,7 +129,7 @@ export function Chat({
         maxFilesize: 5,
       });
 
-      dropzone.current.on('addedfile', (file) => onFileAdded?.(file));
+      dropzone.current.on('addedfile', (file) => addAttachment(file));
     }
 
     return () => {
@@ -97,7 +164,7 @@ export function Chat({
         <TextArea
           className="input"
           minRows={1}
-          disabled={disabled}
+          disabled={working}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
@@ -111,12 +178,12 @@ export function Chat({
             theme="icon tertiary small"
             className="dz-message"
             slot="suffix"
-            disabled={disabled}
+            disabled={working}
             hidden={!acceptedFiles}>
             <Icon icon="vaadin:upload" />
           </Button>
 
-          <Button theme="icon tertiary small" slot="suffix" onClick={onSubmit} disabled={disabled || !message.value}>
+          <Button theme="icon tertiary small" slot="suffix" onClick={onSubmit} disabled={working || !message.value}>
             <Icon src={send} />
           </Button>
         </TextArea>

@@ -1,11 +1,8 @@
-import Markdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/atom-one-light.css';
 import { Icon } from '@vaadin/react-components';
-import { Message } from './Chat';
 import TypingIndicator from './TypingIndicator.js';
-import Mermaid from './Mermaid.js';
 import CustomMarkdown from './CustomMarkdown.js';
+import Message from 'Frontend/generated/org/spring/framework/ai/vaadin/service/AiChatService/Message.js';
 
 interface MessageProps {
   message: Message;

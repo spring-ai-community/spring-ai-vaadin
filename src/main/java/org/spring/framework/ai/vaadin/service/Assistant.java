@@ -134,9 +134,9 @@ public class Assistant implements AiChatService {
     }
 
     public String uploadAttachment(String chatId, MultipartFile file) {
-        Attachment attachment = null;
+        AttachmentFile attachment = null;
         try {
-            attachment = new Attachment(UUID.randomUUID().toString(), file.getOriginalFilename(), file.getContentType(), file.getBytes());
+            attachment = new AttachmentFile(UUID.randomUUID().toString(), file.getOriginalFilename(), file.getContentType(), file.getBytes());
         } catch (IOException e) {
             throw new EndpointException("Failed to read file", e);
         }
@@ -147,7 +147,8 @@ public class Assistant implements AiChatService {
     public List<Message> getHistory(String chatId) {
         return chatMemory.get(chatId, 100).stream()
             .filter(message -> message.getMessageType().equals(MessageType.USER) || message.getMessageType().equals(MessageType.ASSISTANT))
-            .map(message -> new Message(message.getMessageType().toString().toLowerCase(), message.getText()))
+            // TODO: Add attachments
+            .map(message -> new Message(message.getMessageType().toString().toLowerCase(), message.getText(), List.of()))
             .toList();
     }
 

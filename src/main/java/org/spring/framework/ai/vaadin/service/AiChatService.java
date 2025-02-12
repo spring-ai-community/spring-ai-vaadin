@@ -13,9 +13,17 @@ public interface AiChatService {
         List<String> attachmentIds
     ){ }
 
+    record Attachment(
+        String type,
+        String key,
+        String fileName,
+        String url
+    ) {}
+
     record Message(
         String role,
-        String content
+        String content,
+        @Nullable List<Attachment> attachments
     ) {}
 
     Flux<String> stream(String chatId, String userMessage, @Nullable Options options);
