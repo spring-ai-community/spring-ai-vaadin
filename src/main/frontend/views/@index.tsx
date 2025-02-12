@@ -51,8 +51,8 @@ export default function SpringAiAssistant() {
           </h1>
 
           <Button onClick={resetChat} theme="icon small contrast tertiary">
-            <Icon icon="lumo:reload" />
-            <Tooltip slot="tooltip" text="Clear chat" />
+            <Icon icon="lumo:plus" />
+            <Tooltip slot="tooltip" text="New chat" />
           </Button>
 
           <Button onClick={toggleSettingsOpen} theme="icon small contrast tertiary">
