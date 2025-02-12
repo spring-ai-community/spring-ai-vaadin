@@ -71,61 +71,62 @@ export default function SpringAiAssistant() {
         />
       </div>
 
-      <div
-        className={`
+      {settingsOpen && (
+        <div
+          className="
           w-full
-          border-l 
+          border-l
           border-contrast-10 
           flex 
           flex-col 
+          overflow-scroll
           gap-m 
-          p-m 
-          ${settingsOpen ? 'block' : 'hidden'}
-        `}
-        style={{
-          width: '30%',
-          minWidth: '500px',
-        }}>
-        <div className="flex justify-between items-center">
-          <h3>Settings</h3>
-          <Button onClick={toggleSettingsOpen} theme="icon small contrast tertiary">
-            <Icon icon="lumo:cross" />
-            <Tooltip slot="tooltip" text="Close settings" />
-          </Button>
-        </div>
-
-        <h4 className="text-m">General settings</h4>
-        <TextArea
-          label="System Message"
-          value={systemMessage}
-          onChange={handleSystemMessageChange}
+          p-m"
           style={{
-            height: '100px',
-          }}
-        />
-        <h4 className="text-m">RAG data sources</h4>
+            width: '30%',
+            minWidth: '400px',
+          }}>
+          <div className="flex justify-between items-center">
+            <h3>Settings</h3>
+            <Button onClick={toggleSettingsOpen} theme="icon small contrast tertiary">
+              <Icon icon="lumo:cross" />
+              <Tooltip slot="tooltip" text="Close settings" />
+            </Button>
+          </div>
 
-        <ul>
-          {filesInContext.map((file) => (
-            <li key={file}>{file}</li>
-          ))}
-        </ul>
+          <h4 className="text-m">General settings</h4>
+          <TextArea
+            label="System Message"
+            value={systemMessage}
+            onChange={handleSystemMessageChange}
+            style={{
+              height: '100px',
+            }}
+          />
+          <h4 className="text-m">RAG data sources</h4>
 
-        <Upload
-          maxFiles={10}
-          maxFileSize={10 * 1024 * 1024}
-          accept=".txt,.pdf,.md,.doc,.docx"
-          onUploadRequest={async (e) => {
-            e.preventDefault();
+          <ul>
+            {filesInContext.map((file) => (
+              <li key={file}>{file}</li>
+            ))}
+          </ul>
 
-            await RagContextService.addFileToContext(e.detail.file);
+          <Upload
+            maxFiles={10}
+            maxFileSize={10 * 1024 * 1024}
+            accept=".txt,.pdf,.md,.doc,.docx"
+            onUploadRequest={async (e) => {
+              e.preventDefault();
 
-            getContextFiles();
-            // Clear the file input
-            (e.target as UploadElement).files = [];
-          }}
-        />
-      </div>
+              await RagContextService.addFileToContext(e.detail.file);
+
+              getContextFiles();
+              // Clear the file input
+              (e.target as UploadElement).files = [];
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
