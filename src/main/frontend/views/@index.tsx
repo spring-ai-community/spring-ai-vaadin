@@ -72,12 +72,29 @@ export default function SpringAiAssistant() {
       </div>
 
       <div
-        className={`border-l border-contrast-10 flex flex-col gap-s p-m ${settingsOpen ? 'block' : 'hidden'}`}
+        className={`
+          w-full
+          border-l 
+          border-contrast-10 
+          flex 
+          flex-col 
+          gap-m 
+          p-m 
+          ${settingsOpen ? 'block' : 'hidden'}
+        `}
         style={{
           width: '30%',
           minWidth: '500px',
         }}>
-        <h3>Settings</h3>
+        <div className="flex justify-between items-center">
+          <h3>Settings</h3>
+          <Button onClick={toggleSettingsOpen} theme="icon small contrast tertiary">
+            <Icon icon="lumo:cross" />
+            <Tooltip slot="tooltip" text="Close settings" />
+          </Button>
+        </div>
+
+        <h4 className="text-m">General settings</h4>
         <TextArea
           label="System Message"
           value={systemMessage}
@@ -86,7 +103,7 @@ export default function SpringAiAssistant() {
             height: '100px',
           }}
         />
-        <h4>RAG data sources</h4>
+        <h4 className="text-m">RAG data sources</h4>
 
         <ul>
           {filesInContext.map((file) => (
