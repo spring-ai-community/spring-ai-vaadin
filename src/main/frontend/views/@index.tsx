@@ -42,11 +42,11 @@ export default function SpringAiAssistant() {
   }, []);
 
   return (
-    <div className="main-layout flex box-border h-full overflow-hidden">
-      <div className="flex-grow flex flex-col p-m sm:p-s">
-        <header className="flex gap-s items-center px-m">
-          <h1 className="text-l flex-grow flex items-center gap-m">
-            <span className="pr-s">🌱</span>
+    <div className="main-layout">
+      <div className={`chat-layout ${settingsOpen ? 'settings-open' : ''}`}>
+        <header className="chat-header">
+          <h1 className="chat-heading">
+            <span>🌱</span>
             <span>Spring AI Assistant</span>
           </h1>
 
@@ -63,7 +63,6 @@ export default function SpringAiAssistant() {
 
         <Chat
           chatId={chatId}
-          className="flex-grow"
           service={Assistant}
           acceptedFiles="image/*,text/*,application/pdf"
           options={{ systemMessage }}
@@ -72,21 +71,8 @@ export default function SpringAiAssistant() {
       </div>
 
       {settingsOpen && (
-        <div
-          className="
-          w-full
-          border-l
-          border-contrast-10 
-          flex 
-          flex-col 
-          overflow-scroll
-          gap-m 
-          p-m"
-          style={{
-            width: '30%',
-            minWidth: '400px',
-          }}>
-          <div className="flex justify-between items-center">
+        <div className="settings-panel">
+          <div className="settings-header">
             <h3>Settings</h3>
             <Button onClick={toggleSettingsOpen} theme="icon small contrast tertiary">
               <Icon icon="lumo:cross" />
@@ -94,7 +80,7 @@ export default function SpringAiAssistant() {
             </Button>
           </div>
 
-          <h4 className="text-m">General settings</h4>
+          <h4 className="settings-sub-heading">General settings</h4>
           <TextArea
             label="System Message"
             value={systemMessage}
@@ -103,7 +89,7 @@ export default function SpringAiAssistant() {
               height: '100px',
             }}
           />
-          <h4 className="text-m">RAG data sources</h4>
+          <h4 className="settings-sub-heading">RAG data sources</h4>
 
           <ul>
             {filesInContext.map((file) => (
