@@ -17,6 +17,13 @@ public class AttachmentService {
         attachments.computeIfAbsent(chatId, k -> new ArrayList<>()).add(attachment);
     }
 
+    public void removeAttachment(String chatId, String attachmentId) {
+        attachments.computeIfPresent(chatId, (k, v) -> {
+            v.removeIf(attachment -> attachment.id().equals(attachmentId));
+            return v;
+        });
+    }
+
     public List<AttachmentFile> getAttachments(String chatId) {
         return attachments.getOrDefault(chatId, List.of());
     }

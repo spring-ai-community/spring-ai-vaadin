@@ -21,6 +21,8 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.MimeType;
 import org.springframework.web.multipart.MultipartFile;
+import org.vaadin.components.experimental.chat.AiChatService;
+
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -34,7 +36,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
 @BrowserCallable
 @AnonymousAllowed
-public class Assistant implements AiChatService {
+public class Assistant implements AiChatService<Assistant.Options> {
 
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
@@ -98,14 +100,13 @@ public class Assistant implements AiChatService {
 
     public Flux<String> stream(String chatId, String userMessage, @Nullable Options options) {
         if (options == null) {
-            options = new Options("", List.of());
+            options = new Options("");
         }
 
         var system = options.systemMessage().isBlank() ? DEFAULT_SYSTEM : options.systemMessage();
 
         // Retrieve attachments from the list of attachment IDs
-        var attachments = options.attachmentIds().stream()
-            .flatMap(id -> attachmentService.getAttachments(chatId).stream().filter(attachment -> attachment.id().equals(id))).toList();
+        var attachments = attachmentService.getAttachments(chatId);
         attachmentService.clearAttachments(chatId);
 
         // Map text and pdf attachments as documents wrapped in <attachment> tags
@@ -144,6 +145,10 @@ public class Assistant implements AiChatService {
         return attachment.id();
     }
 
+    public void removeAttachment(String chatId, String attachmentId) {
+        attachmentService.removeAttachment(chatId, attachmentId);
+    }
+
     public List<Message> getHistory(String chatId) {
         return chatMemory.get(chatId, 100).stream()
             .filter(message -> message.getMessageType().equals(MessageType.USER) || message.getMessageType().equals(MessageType.ASSISTANT))
@@ -154,6 +159,9 @@ public class Assistant implements AiChatService {
 
     public void closeChat(String chatId) {
         chatMemory.clear(chatId);
+    }
+
+    public record Options(String systemMessage) {
     }
 
 }

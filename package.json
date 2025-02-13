@@ -4,6 +4,7 @@
   "type": "module",
   "dependencies": {
     "@polymer/polymer": "3.5.2",
+    "@types/dropzone": "5.7.9",
     "@vaadin/bundles": "24.7.0-alpha8",
     "@vaadin/common-frontend": "0.0.19",
     "@vaadin/hilla-file-router": "24.7.0-alpha11",
@@ -23,22 +24,20 @@
     "@vaadin/vaadin-usage-statistics": "2.1.3",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
-    "dropzone": "^6.0.0-beta.2",
-    "highlight.js": "^11.11.1",
+    "dropzone": "6.0.0-beta.2",
     "lit": "3.2.1",
     "mermaid": "^11.4.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-markdown": "^9.0.3",
+    "react-markdown": "9.0.3",
     "react-router": "7.1.4",
-    "rehype-highlight": "^7.0.1"
+    "rehype-highlight": "7.0.2"
   },
   "devDependencies": {
     "@babel/preset-react": "7.26.3",
     "@preact/signals-react-transform": "0.5.1",
     "@rollup/plugin-replace": "6.0.2",
     "@rollup/pluginutils": "5.1.4",
-    "@types/dropzone": "^5.7.9",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "@vaadin/hilla-generator-cli": "24.7.0-alpha11",
@@ -71,6 +70,7 @@
   "vaadin": {
     "dependencies": {
       "@polymer/polymer": "3.5.2",
+      "@types/dropzone": "5.7.9",
       "@vaadin/bundles": "24.7.0-alpha8",
       "@vaadin/common-frontend": "0.0.19",
       "@vaadin/hilla-file-router": "24.7.0-alpha11",
@@ -90,10 +90,13 @@
       "@vaadin/vaadin-usage-statistics": "2.1.3",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
+      "dropzone": "6.0.0-beta.2",
       "lit": "3.2.1",
       "react": "18.3.1",
       "react-dom": "18.3.1",
-      "react-router": "7.1.4"
+      "react-markdown": "9.0.3",
+      "react-router": "7.1.4",
+      "rehype-highlight": "7.0.2"
     },
     "devDependencies": {
       "@babel/preset-react": "7.26.3",
@@ -126,7 +129,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "10447d0f43d887943cc09feac64a95c576abf87514633538a7ef910b7a54687b"
+    "hash": "d854e94674ab470d00c0763a2392848df35d166f0b0ac7cd554ac3034b4c5dd5"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -152,12 +155,12 @@
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
-    "highlight.js": "$highlight.js",
-    "react-markdown": "$react-markdown",
-    "rehype-highlight": "$rehype-highlight",
     "react-router": "$react-router",
+    "mermaid": "$mermaid",
+    "react-markdown": "$react-markdown",
     "dropzone": "$dropzone",
-    "mermaid": "$mermaid"
+    "rehype-highlight": "$rehype-highlight",
+    "@types/dropzone": "$@types/dropzone"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
