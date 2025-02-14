@@ -9,7 +9,9 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.mcp.spring.McpFunctionCallback;
 import org.springframework.ai.model.Media;
@@ -19,6 +21,7 @@ import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
 import org.springframework.web.multipart.MultipartFile;
 import org.vaadin.components.experimental.chat.AiChatService;
@@ -26,6 +29,7 @@ import org.vaadin.components.experimental.chat.AiChatService;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -132,6 +136,39 @@ public class Assistant implements AiChatService<org.spring.framework.ai.vaadin.s
                 .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20))
             .stream()
             .content();
+    }
+
+
+    @Override
+    public String streamAudio(String chatId, MultipartFile audioFile, @Nullable Options options) {
+        var system = options.systemMessage().isBlank() ? DEFAULT_SYSTEM : options.systemMessage();
+        
+        try {
+            var media = new Media(MediaType.parseMediaType("audio/wav"), new ByteArrayResource(audioFile.getBytes()));
+
+            AssistantMessage response = chatClient.prompt()
+                    .system(system)
+                    .user(u -> u.text("Please answer the questions in the audio input").media(media))                    
+                    .call()
+                    .chatResponse()
+                    .getResult()
+                    .getOutput();
+
+            // Get the text response and audio response
+            String textResponse = response.getText();
+            byte[] audioResponse = response.getMedia().get(0).getDataAsByteArray();
+
+            // Create response object with both text and audio
+            // AudioResponse audioResponseObj = new AudioResponse(textResponse, audioResponse);
+            
+            return Base64.getEncoder().encodeToString(audioResponse);
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+            return "";
+        }
+
+        
     }
 
     public String uploadAttachment(String chatId, MultipartFile file) {

@@ -31,7 +31,8 @@
     "react-dom": "18.3.1",
     "react-markdown": "9.0.3",
     "react-router": "7.1.4",
-    "rehype-highlight": "7.0.2"
+    "rehype-highlight": "7.0.2",
+    "webm-to-wav-converter": "1.1.0"
   },
   "devDependencies": {
     "@babel/preset-react": "7.26.3",
@@ -96,7 +97,8 @@
       "react-dom": "18.3.1",
       "react-markdown": "9.0.3",
       "react-router": "7.1.4",
-      "rehype-highlight": "7.0.2"
+      "rehype-highlight": "7.0.2",
+      "webm-to-wav-converter": "1.1.0"
     },
     "devDependencies": {
       "@babel/preset-react": "7.26.3",
@@ -129,7 +131,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "d854e94674ab470d00c0763a2392848df35d166f0b0ac7cd554ac3034b4c5dd5"
+    "hash": "3387dccaac95152985522fbf0570bce542422c32223d53e347f0d84687cb2d6b"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -160,7 +162,8 @@
     "react-markdown": "$react-markdown",
     "dropzone": "$dropzone",
     "rehype-highlight": "$rehype-highlight",
-    "@types/dropzone": "$@types/dropzone"
+    "@types/dropzone": "$@types/dropzone",
+    "webm-to-wav-converter": "$webm-to-wav-converter"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
