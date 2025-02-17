@@ -5,10 +5,8 @@
 html {
   --layout-max-width: 60rem;
   font-size: 15px;
-}
 
-@media (pointer: coarse) {
-  html {
+  @media (pointer: coarse) {
     font-size: 18px;
   }
 }
@@ -18,60 +16,60 @@ html {
   box-sizing: border-box;
   height: 100vh;
   overflow: hidden;
-}
 
-.chat-layout {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  padding: var(--lumo-space-s);
-}
+  .chat-layout {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    padding: var(--lumo-space-s);
 
-.chat-header {
-  display: flex;
-  gap: var(--lumo-space-s);
-  padding: 0 var(--lumo-space-m);
-  align-items: center;
-}
+    .chat-header {
+      display: flex;
+      gap: var(--lumo-space-s);
+      padding: 0 var(--lumo-space-m);
+      align-items: center;
 
-.chat-heading {
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  gap: var(--lumo-space-m);
-  font-size: var(--lumo-font-size-l);
-}
+      .chat-heading {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        gap: var(--lumo-space-m);
+        font-size: var(--lumo-font-size-l);
+      }
+    }
 
-.vaadin-chat-component {
-  flex-grow: 1;
-}
+    .vaadin-chat-component {
+      flex-grow: 1;
+    }
 
-.settings-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--lumo-space-m);
-  padding: var(--lumo-space-m);
-  overflow-y: scroll;
-  border-left: 1px solid var(--lumo-contrast-20pct);
-}
-
-.settings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.settings-sub-heading {
-  font-size: var(--lumo-font-size-m);
-}
-
-@media (max-width: 768px) {
-  .chat-layout.settings-open {
-    display: none;
+    @media (max-width: 1024px) {
+      &.settings-open {
+        display: none;
+      }
+    }
   }
 
   .settings-panel {
-    width: 100%;
-    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--lumo-space-m);
+    padding: var(--lumo-space-m);
+    overflow-y: scroll;
+    border-left: 1px solid var(--lumo-contrast-20pct);
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .settings-sub-heading {
+      font-size: var(--lumo-font-size-m);
+    }
+
+    @media (max-width: 1024px) {
+      width: 100%;
+      padding: 1.5rem;
+    }
   }
 }
