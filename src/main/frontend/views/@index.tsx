@@ -1,23 +1,38 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Chat } from '@vaadin/flow-frontend/chat/Chat.js';
-import { Button, Icon, Tooltip, TextArea, Upload, UploadElement } from '@vaadin/react-components';
+import { Button, Checkbox, Icon, TextArea, Tooltip, Upload, UploadElement } from '@vaadin/react-components';
 import { nanoid } from 'nanoid';
 import '@vaadin/icons';
 import '@vaadin/vaadin-lumo-styles/icons';
 import './index.css';
 import { Assistant, RagContextService } from 'Frontend/generated/endpoints';
 import Mermaid from 'Frontend/components/Mermaid.js';
+import ChatOptions from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/ChatOptions';
+import { useForm } from '@vaadin/hilla-react-form';
+import ChatOptionsModel from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/ChatOptionsModel';
+
+const defaultOptions: ChatOptions = {
+  systemMessage: '',
+  useMcp: false,
+};
 
 export default function SpringAiAssistant() {
   const [chatId, setChatId] = useState(nanoid());
   const [filesInContext, setFilesInContext] = useState<string[]>([]);
-  const [systemMessage, setSystemMessage] = useState<string>('');
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   async function resetChat() {
     setChatId(nanoid());
   }
 
+  // Set up form for managing chat options
+  const { field, model, read, value } = useForm(ChatOptionsModel);
+
+  useEffect(() => {
+    read(defaultOptions);
+  }, []);
+
+  // Handle RAG context
   useEffect(() => {
     getContextFiles();
   }, []);
@@ -30,10 +45,7 @@ export default function SpringAiAssistant() {
     setSettingsOpen(!settingsOpen);
   };
 
-  const handleSystemMessageChange = (event: any) => {
-    setSystemMessage(event.target.value);
-  };
-
+  // Define a custom renderer for Mermaid charts
   const renderer = useCallback((language = '', content = '') => {
     if (language.includes('mermaid')) {
       return <Mermaid chart={content} />;
@@ -65,7 +77,7 @@ export default function SpringAiAssistant() {
           chatId={chatId}
           service={Assistant}
           acceptedFiles="image/*,text/*,application/pdf"
-          options={{ systemMessage }}
+          options={value}
           renderer={renderer}
         />
       </div>
@@ -81,21 +93,19 @@ export default function SpringAiAssistant() {
           </div>
 
           <h4 className="settings-sub-heading">General settings</h4>
-          <TextArea
-            label="System Message"
-            value={systemMessage}
-            onChange={handleSystemMessageChange}
-            style={{
-              height: '100px',
-            }}
-          />
+          <TextArea label="System Message" {...field(model.systemMessage)} minRows={3} />
+
+          <Checkbox label="Use web search (MCP)" {...field(model.useMcp)} />
+
           <h4 className="settings-sub-heading">RAG data sources</h4>
 
-          <ul>
-            {filesInContext.map((file) => (
-              <li key={file}>{file}</li>
-            ))}
-          </ul>
+          {filesInContext.length > 0 && (
+            <ul>
+              {filesInContext.map((file) => (
+                <li key={file}>{file}</li>
+              ))}
+            </ul>
+          )}
 
           <Upload
             maxFiles={10}

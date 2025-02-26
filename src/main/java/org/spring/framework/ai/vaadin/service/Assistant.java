@@ -11,7 +11,6 @@ import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.mcp.spring.McpFunctionCallback;
 import org.springframework.ai.model.Media;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
@@ -22,7 +21,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.MimeType;
 import org.springframework.web.multipart.MultipartFile;
 import org.vaadin.components.experimental.chat.AiChatService;
-
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -36,7 +34,12 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
 @BrowserCallable
 @AnonymousAllowed
-public class Assistant implements AiChatService<Assistant.Options> {
+public class Assistant implements AiChatService<Assistant.ChatOptions> {
+    public record ChatOptions(
+        String systemMessage,
+        boolean useMcp
+    ) {
+    }
 
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
@@ -57,15 +60,12 @@ public class Assistant implements AiChatService<Assistant.Options> {
         ChatMemory chatMemory,
         ChatClient.Builder builder,
         AttachmentService attachmentService,
-        VectorStore vectorStore,
-        List<McpFunctionCallback> mcpFunctionCallbacks
+        VectorStore vectorStore
     ) {
         this.chatMemory = chatMemory;
         this.attachmentService = attachmentService;
 
         chatClient = builder
-            // TODO, make MCP toggleable
-            .defaultFunctions(mcpFunctionCallbacks.toArray(new McpFunctionCallback[0]))
             .defaultAdvisors(
 
                 // Absolutely don't let people ask about PHP 😆
@@ -87,6 +87,7 @@ public class Assistant implements AiChatService<Assistant.Options> {
                     .queryAugmenter(ContextualQueryAugmenter.builder()
                         .allowEmptyContext(true)
                         .build())
+
                     // Use the vector store to retrieve documents
                     .documentRetriever(
                         VectorStoreDocumentRetriever.builder()
@@ -98,40 +99,31 @@ public class Assistant implements AiChatService<Assistant.Options> {
             .build();
     }
 
-    public Flux<String> stream(String chatId, String userMessage, @Nullable Options options) {
+    public Flux<String> stream(String chatId, String userMessage, @Nullable ChatOptions options) {
         if (options == null) {
-            options = new Options("");
+            options = new ChatOptions("", false);
         }
 
         var system = options.systemMessage().isBlank() ? DEFAULT_SYSTEM : options.systemMessage();
 
-        // Retrieve attachments from the list of attachment IDs
-        var attachments = attachmentService.getAttachments(chatId);
-        attachmentService.clearAttachments(chatId);
+        var processedAttachments = processAttachments(chatId);
 
-        // Map text and pdf attachments as documents wrapped in <attachment> tags
-        var documentList = attachments.stream().filter(attachment -> attachment.contentType().contains("text") || attachment.contentType().contains("pdf")).toList();
-
-        var documentBuilder = new StringBuilder("\n");
-        documentList.forEach(attachment -> {
-            var data = new ByteArrayResource(attachment.data());
-            var documents = new TikaDocumentReader(data).read();
-            var content = String.join("\n", documents.stream().map(Document::getText).toList());
-            documentBuilder.append(String.format(ATTACHMENT_TEMPLATE, attachment.fileName(), content));
-        });
-
-        // Map image attachments to Media objects
-        var mediaList = attachments.stream().filter(attachment -> attachment.contentType().contains("image"))
-            .map(attachment -> new Media(MimeType.valueOf(attachment.contentType()), new ByteArrayResource(attachment.data()))).toList();
-
-        return chatClient.prompt()
+        var prompt = chatClient.prompt()
             .system(system)
-            .user(u -> u.text(userMessage + documentBuilder).media(mediaList.toArray(Media[]::new)))
-            .advisors(a -> a
-                .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
-                .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20))
-            .stream()
-            .content();
+            .user(u -> {
+                u.text(userMessage + processedAttachments.documentContent());
+                u.media(processedAttachments.mediaList().toArray(Media[]::new));
+            })
+            .advisors(a -> {
+                a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId);
+                a.param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20);
+            });
+
+        if (options.useMcp) {
+            // add tools
+        }
+
+        return prompt.stream().content();
     }
 
     public String uploadAttachment(String chatId, MultipartFile file) {
@@ -161,7 +153,35 @@ public class Assistant implements AiChatService<Assistant.Options> {
         chatMemory.clear(chatId);
     }
 
-    public record Options(String systemMessage) {
+    private record ProcessedAttachments(String documentContent, List<Media> mediaList) {
     }
+
+    private ProcessedAttachments processAttachments(String chatId) {
+        var attachments = attachmentService.getAttachments(chatId);
+        attachmentService.clearAttachments(chatId);
+
+        // Map text and pdf attachments as documents wrapped in <attachment> tags
+        var documentList = attachments.stream()
+            .filter(attachment -> attachment.contentType().contains("text") || attachment.contentType().contains("pdf"))
+            .toList();
+
+        var documentBuilder = new StringBuilder("\n");
+        documentList.forEach(attachment -> {
+            var data = new ByteArrayResource(attachment.data());
+            var documents = new TikaDocumentReader(data).read();
+            var content = String.join("\n", documents.stream().map(Document::getText).toList());
+            documentBuilder.append(String.format(ATTACHMENT_TEMPLATE, attachment.fileName(), content));
+        });
+
+        // Map image attachments to Media objects
+        var mediaList = attachments.stream()
+            .filter(attachment -> attachment.contentType().contains("image"))
+            .map(attachment -> new Media(MimeType.valueOf(attachment.contentType()),
+                new ByteArrayResource(attachment.data())))
+            .toList();
+
+        return new ProcessedAttachments(documentBuilder.toString(), mediaList);
+    }
+
 
 }
