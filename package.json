@@ -17,6 +17,7 @@
     "@vaadin/hilla-react-signals": "24.7.0-beta1",
     "@vaadin/polymer-legacy-adapter": "24.7.0-beta1",
     "@vaadin/react-components": "24.7.0-beta1",
+    "@vaadin/react-components-pro": "24.7.0-beta1",
     "@vaadin/vaadin-development-mode-detector": "2.0.7",
     "@vaadin/vaadin-lumo-styles": "24.7.0-beta1",
     "@vaadin/vaadin-material-styles": "24.7.0-beta1",
@@ -27,6 +28,7 @@
     "dropzone": "6.0.0-beta.2",
     "lit": "3.2.1",
     "mermaid": "^11.4.1",
+    "proj4": "2.15.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-markdown": "9.0.3",
@@ -84,6 +86,7 @@
       "@vaadin/hilla-react-signals": "24.7.0-beta1",
       "@vaadin/polymer-legacy-adapter": "24.7.0-beta1",
       "@vaadin/react-components": "24.7.0-beta1",
+      "@vaadin/react-components-pro": "24.7.0-beta1",
       "@vaadin/vaadin-development-mode-detector": "2.0.7",
       "@vaadin/vaadin-lumo-styles": "24.7.0-beta1",
       "@vaadin/vaadin-material-styles": "24.7.0-beta1",
@@ -93,6 +96,7 @@
       "date-fns": "2.29.3",
       "dropzone": "6.0.0-beta.2",
       "lit": "3.2.1",
+      "proj4": "2.15.0",
       "react": "18.3.1",
       "react-dom": "18.3.1",
       "react-markdown": "9.0.3",
@@ -131,7 +135,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "13da69b32ce8ae094383bdf38d8c8041812411ae17d4b7f190bc5fa3ba4df9f3"
+    "hash": "8f0e381f9fa60c41797f209a1ccce05ba132abf67cd77e73deb36e37eece4c51"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -162,7 +166,9 @@
     "react-markdown": "$react-markdown",
     "dropzone": "$dropzone",
     "rehype-highlight": "$rehype-highlight",
-    "@types/dropzone": "$@types/dropzone"
+    "@types/dropzone": "$@types/dropzone",
+    "@vaadin/react-components-pro": "$@vaadin/react-components-pro",
+    "proj4": "$proj4"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
