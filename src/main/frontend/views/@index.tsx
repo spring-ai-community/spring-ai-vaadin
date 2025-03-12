@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Chat } from '@vaadin/flow-frontend/chat/Chat.js';
-import { Button, Checkbox, Icon, TextArea, Tooltip, Upload, UploadElement } from '@vaadin/react-components';
+import { Button, Checkbox, Icon, TextArea, TextField, Tooltip, Upload, UploadElement } from '@vaadin/react-components';
 import { nanoid } from 'nanoid';
 import '@vaadin/icons';
 import '@vaadin/vaadin-lumo-styles/icons';

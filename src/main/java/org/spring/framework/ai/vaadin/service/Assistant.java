@@ -42,6 +42,8 @@ public class Assistant implements AiChatService<Assistant.ChatOptions> {
     ) {
     }
 
+    private final ChatOptions defaultOptions = new ChatOptions("", false);
+
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
     private final AttachmentService attachmentService;
@@ -105,7 +107,7 @@ public class Assistant implements AiChatService<Assistant.ChatOptions> {
 
     public Flux<String> stream(String chatId, String userMessage, @Nullable ChatOptions options) {
         if (options == null) {
-            options = new ChatOptions("", false);
+            options = defaultOptions;
         }
 
         var system = options.systemMessage().isBlank() ? DEFAULT_SYSTEM : options.systemMessage();
