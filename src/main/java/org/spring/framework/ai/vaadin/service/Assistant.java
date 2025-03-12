@@ -16,6 +16,7 @@ import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugment
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.MimeType;
@@ -44,6 +45,7 @@ public class Assistant implements AiChatService<Assistant.ChatOptions> {
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
     private final AttachmentService attachmentService;
+    private final ToolCallbackProvider tools;
     private static final String DEFAULT_SYSTEM = """
         You are an expert on all things Java and Spring related.
         Answer questions in a friendly manner and give clear explanations.
@@ -60,10 +62,12 @@ public class Assistant implements AiChatService<Assistant.ChatOptions> {
         ChatMemory chatMemory,
         ChatClient.Builder builder,
         AttachmentService attachmentService,
-        VectorStore vectorStore
+        VectorStore vectorStore,
+        ToolCallbackProvider tools
     ) {
         this.chatMemory = chatMemory;
         this.attachmentService = attachmentService;
+        this.tools = tools;
 
         chatClient = builder
             .defaultAdvisors(
@@ -120,7 +124,7 @@ public class Assistant implements AiChatService<Assistant.ChatOptions> {
             });
 
         if (options.useMcp) {
-            // add tools
+            prompt.tools(tools);
         }
 
         return prompt.stream().content();

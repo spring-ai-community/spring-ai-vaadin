@@ -95,7 +95,7 @@ export default function SpringAiAssistant() {
           <h4 className="settings-sub-heading">General settings</h4>
           <TextArea label="System Message" {...field(model.systemMessage)} minRows={3} />
 
-          <Checkbox label="Use web search (MCP)" {...field(model.useMcp)} />
+          <Checkbox label="Use MCP" {...field(model.useMcp)} />
 
           <h4 className="settings-sub-heading">RAG data sources</h4>
 

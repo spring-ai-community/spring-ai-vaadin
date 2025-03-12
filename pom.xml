@@ -29,7 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-ai.version>1.0.0-M6</spring-ai.version>
-		<vaadin.version>24.7.0.beta1</vaadin.version>
+		<vaadin.version>24.7.0.beta2</vaadin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -45,9 +45,8 @@
 			<artifactId>spring-ai-tika-document-reader</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.experimental</groupId>
-			<artifactId>spring-ai-mcp</artifactId>
-			<version>0.6.0</version>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-mcp-client-spring-boot-starter</artifactId>
 		</dependency>
 
 		<dependency>

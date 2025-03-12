@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "brave-search": {
+    "vaadin": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "args": ["-y", "vaadin-docs-mcp-server@latest"],
       "env": {}
     }
   }
