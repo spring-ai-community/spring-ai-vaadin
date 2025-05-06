@@ -4,7 +4,6 @@
   "type": "module",
   "dependencies": {
     "@polymer/polymer": "3.5.2",
-    "@types/dropzone": "5.7.9",
     "@vaadin/bundles": "24.7.0-beta1",
     "@vaadin/common-frontend": "0.0.19",
     "@vaadin/hilla-file-router": "24.7.0-beta1",
@@ -17,7 +16,6 @@
     "@vaadin/hilla-react-signals": "24.7.0-beta1",
     "@vaadin/polymer-legacy-adapter": "24.7.0-beta1",
     "@vaadin/react-components": "24.7.0-beta1",
-    "@vaadin/react-components-pro": "24.7.0-beta1",
     "@vaadin/vaadin-development-mode-detector": "2.0.7",
     "@vaadin/vaadin-lumo-styles": "24.7.0-beta1",
     "@vaadin/vaadin-material-styles": "24.7.0-beta1",
@@ -25,15 +23,11 @@
     "@vaadin/vaadin-usage-statistics": "2.1.3",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
-    "dropzone": "6.0.0-beta.2",
     "lit": "3.2.1",
     "mermaid": "^11.4.1",
-    "proj4": "2.15.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-markdown": "9.0.3",
-    "react-router": "7.2.0",
-    "rehype-highlight": "7.0.2"
+    "react-router": "7.2.0"
   },
   "devDependencies": {
     "@babel/preset-react": "7.26.3",
@@ -73,7 +67,6 @@
   "vaadin": {
     "dependencies": {
       "@polymer/polymer": "3.5.2",
-      "@types/dropzone": "5.7.9",
       "@vaadin/bundles": "24.7.0-beta1",
       "@vaadin/common-frontend": "0.0.19",
       "@vaadin/hilla-file-router": "24.7.0-beta1",
@@ -86,7 +79,6 @@
       "@vaadin/hilla-react-signals": "24.7.0-beta1",
       "@vaadin/polymer-legacy-adapter": "24.7.0-beta1",
       "@vaadin/react-components": "24.7.0-beta1",
-      "@vaadin/react-components-pro": "24.7.0-beta1",
       "@vaadin/vaadin-development-mode-detector": "2.0.7",
       "@vaadin/vaadin-lumo-styles": "24.7.0-beta1",
       "@vaadin/vaadin-material-styles": "24.7.0-beta1",
@@ -94,14 +86,10 @@
       "@vaadin/vaadin-usage-statistics": "2.1.3",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
-      "dropzone": "6.0.0-beta.2",
       "lit": "3.2.1",
-      "proj4": "2.15.0",
       "react": "18.3.1",
       "react-dom": "18.3.1",
-      "react-markdown": "9.0.3",
-      "react-router": "7.2.0",
-      "rehype-highlight": "7.0.2"
+      "react-router": "7.2.0"
     },
     "devDependencies": {
       "@babel/preset-react": "7.26.3",
@@ -135,7 +123,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "8f0e381f9fa60c41797f209a1ccce05ba132abf67cd77e73deb36e37eece4c51"
+    "hash": "1d0a93a3ef588be4c56baf38b5d2cf2674b3b8caf441663966fbe55ad9094d78"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -162,18 +150,10 @@
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
     "react-router": "$react-router",
-    "mermaid": "$mermaid",
-    "react-markdown": "$react-markdown",
-    "dropzone": "$dropzone",
-    "rehype-highlight": "$rehype-highlight",
-    "@types/dropzone": "$@types/dropzone",
-    "@vaadin/react-components-pro": "$@vaadin/react-components-pro",
-    "proj4": "$proj4"
+    "mermaid": "$mermaid"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ]
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [ "prettier --write" ]
   },
   "scripts": {
     "prepare": "husky",

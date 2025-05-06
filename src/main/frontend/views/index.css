@@ -38,8 +38,8 @@ html {
       }
     }
 
-    .vaadin-chat-component {
-      flex-grow: 1;
+    .chat-component {
+      flex: 1;
     }
 
     @media (max-width: 1024px) {

@@ -20,7 +20,6 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.MimeType;
 import org.springframework.web.multipart.MultipartFile;
-import org.vaadin.components.experimental.chat.AiChatService;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -34,7 +33,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
 @BrowserCallable
 @AnonymousAllowed
-public class Assistant implements AiChatService<Assistant.ChatOptions> {
+public class Assistant {
     public record ChatOptions(
         String systemMessage,
         boolean useMcp
@@ -183,5 +182,7 @@ public class Assistant implements AiChatService<Assistant.ChatOptions> {
         return new ProcessedAttachments(documentBuilder.toString(), mediaList);
     }
 
+    record Attachment(String type, String key, String fileName, String url) {}
 
+    record Message(String role, String content, @Nullable List<Attachment> attachments) {}
 }
