@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Icon, Tooltip, UploadFile } from '@vaadin/react-components';
+import type { UploadFile } from '@vaadin/react-components';
 import { nanoid } from 'nanoid';
-import '@vaadin/icons';
-import '@vaadin/vaadin-lumo-styles/icons';
 import './index.css';
 import { Assistant, RagContextService } from 'Frontend/generated/endpoints';
 import Chat, { ChatMessageListItem } from 'Frontend/components/Chat';
@@ -11,6 +9,7 @@ import { useForm } from '@vaadin/hilla-react-form';
 import ChatOptionsModel from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/ChatOptionsModel';
 import Message from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/Message.js';
 import SettingsPanel from 'Frontend/components/SettingsPanel';
+import ChatHeader from 'Frontend/components/ChatHeader';
 
 const defaultOptions: ChatOptions = {
   systemMessage: '',
@@ -119,22 +118,7 @@ export default function SpringAiAssistant() {
   return (
     <div className="main-layout">
       <div className={`chat-layout ${settingsOpen ? 'settings-open' : ''}`}>
-        <header className="chat-header">
-          <h1 className="chat-heading">
-            <span>🌱</span>
-            <span>Spring AI Assistant</span>
-          </h1>
-
-          <Button onClick={resetChat} theme="icon small contrast tertiary">
-            <Icon icon="lumo:plus" />
-            <Tooltip slot="tooltip" text="New chat" />
-          </Button>
-
-          <Button onClick={toggleSettingsOpen} theme="icon small contrast tertiary">
-            <Icon icon="lumo:cog" />
-            <Tooltip slot="tooltip" text="Settings" />
-          </Button>
-        </header>
+        <ChatHeader onNewChat={resetChat} onToggleSettings={toggleSettingsOpen} />
 
         <Chat
           className="chat-component"

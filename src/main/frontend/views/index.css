@@ -23,21 +23,6 @@ html {
     flex-direction: column;
     padding: var(--lumo-space-s);
 
-    .chat-header {
-      display: flex;
-      gap: var(--lumo-space-s);
-      padding: 0 var(--lumo-space-m);
-      align-items: center;
-
-      .chat-heading {
-        display: flex;
-        flex-grow: 1;
-        align-items: center;
-        gap: var(--lumo-space-m);
-        font-size: var(--lumo-font-size-l);
-      }
-    }
-
     .chat-component {
       flex: 1;
     }
