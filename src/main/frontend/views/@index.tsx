@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Checkbox, Icon, TextArea, Tooltip, Upload, UploadElement, UploadFile } from '@vaadin/react-components';
+import { Button, Icon, Tooltip, UploadFile } from '@vaadin/react-components';
 import { nanoid } from 'nanoid';
 import '@vaadin/icons';
 import '@vaadin/vaadin-lumo-styles/icons';
@@ -10,6 +10,7 @@ import ChatOptions from 'Frontend/generated/org/spring/framework/ai/vaadin/servi
 import { useForm } from '@vaadin/hilla-react-form';
 import ChatOptionsModel from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/ChatOptionsModel';
 import Message from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/Message.js';
+import SettingsPanel from 'Frontend/components/SettingsPanel';
 
 const defaultOptions: ChatOptions = {
   systemMessage: '',
@@ -148,45 +149,14 @@ export default function SpringAiAssistant() {
       </div>
 
       {settingsOpen && (
-        <div className="settings-panel">
-          <div className="settings-header">
-            <h3>Settings</h3>
-            <Button onClick={toggleSettingsOpen} theme="icon small contrast tertiary">
-              <Icon icon="lumo:cross" />
-              <Tooltip slot="tooltip" text="Close settings" />
-            </Button>
-          </div>
-
-          <h4 className="settings-sub-heading">General settings</h4>
-          <TextArea label="System Message" {...field(model.systemMessage)} minRows={3} />
-
-          <Checkbox label="Use web search (MCP)" {...field(model.useMcp)} />
-
-          <h4 className="settings-sub-heading">RAG data sources</h4>
-
-          {filesInContext.length > 0 && (
-            <ul>
-              {filesInContext.map((file) => (
-                <li key={file}>{file}</li>
-              ))}
-            </ul>
-          )}
-
-          <Upload
-            maxFiles={10}
-            maxFileSize={10 * 1024 * 1024}
-            accept=".txt,.pdf,.md,.doc,.docx"
-            onUploadRequest={async (e) => {
-              e.preventDefault();
-
-              await RagContextService.addFileToContext(e.detail.file);
-
-              getContextFiles();
-              // Clear the file input
-              (e.target as UploadElement).files = [];
-            }}
-          />
-        </div>
+        <SettingsPanel
+          className="settings-panel"
+          toggleSettingsOpen={toggleSettingsOpen}
+          filesInContext={filesInContext}
+          getContextFiles={getContextFiles}
+          systemMessageField={field(model.systemMessage)}
+          useMcpField={field(model.useMcp)}
+        />
       )}
     </div>
   );
