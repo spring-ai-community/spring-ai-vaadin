@@ -79,11 +79,27 @@ export default function Chat({
 
       // Handle attachments
       if (item.attachments?.length) {
-        const attachmentText = item.attachments.map((attachment) => attachment.fileName).join('\n');
+        const attachmentsHTML = `<div class="${styles.attachments}">
+            ${item.attachments
+              .map((attachment) => {
+                const isImage = attachment.type.startsWith('image/');
+
+                return `<div class="${styles.attachment}" title="${attachment.fileName}">
+                  ${
+                    isImage
+                      ? `<img src="${attachment.url}" alt="${attachment.fileName}" class="${styles.attachmentImage}" />`
+                      : `<div class="${styles.attachmentIcon}">📄</div>`
+                  }
+                  <span class="${styles.attachmentName}">${attachment.fileName}</span>
+                </div>`;
+              })
+              .join('')}
+          </div>
+        `;
 
         return {
           ...item,
-          text: `${attachmentText}\n${item.text}`,
+          text: `${attachmentsHTML}\n${item.text}`,
         };
       }
 

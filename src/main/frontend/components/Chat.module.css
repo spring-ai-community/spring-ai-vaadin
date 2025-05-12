@@ -33,6 +33,56 @@
   animation: typing 1.2s infinite ease-in-out;
 }
 
+/* Attachment styles */
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lumo-space-s);
+  margin-bottom: var(--lumo-space-s);
+}
+
+.attachment {
+  position: relative;
+  border-radius: var(--lumo-border-radius-m);
+  box-shadow: var(--lumo-box-shadow-xs);
+  background-color: var(--lumo-shade-5pct);
+  overflow: hidden;
+  width: 160px;
+  height: 140px;
+  text-align: center;
+}
+
+.attachmentIcon {
+  color: var(--lumo-primary-text-color);
+  font-size: var(--lumo-font-size-xxxl);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.attachmentImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.attachmentName {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: var(--lumo-font-size-xs);
+  font-weight: 500;
+  color: var(--lumo-secondary-text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: var(--lumo-space-xs);
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+}
+
 @keyframes typing {
   0% {
     box-shadow:

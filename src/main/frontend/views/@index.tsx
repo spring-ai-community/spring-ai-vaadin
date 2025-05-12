@@ -8,6 +8,7 @@ import ChatOptions from 'Frontend/generated/org/spring/framework/ai/vaadin/servi
 import { useForm } from '@vaadin/hilla-react-form';
 import ChatOptionsModel from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/ChatOptionsModel';
 import Message from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/Message.js';
+import Attachment from 'Frontend/generated/org/spring/framework/ai/vaadin/service/Assistant/Attachment.js';
 import SettingsPanel from 'Frontend/components/SettingsPanel';
 import ChatHeader from 'Frontend/components/ChatHeader';
 
@@ -26,6 +27,23 @@ function createItem(message: Message): ChatMessageListItem {
     userName: message.role === 'assistant' ? 'Assistant' : 'User',
     userColorIndex: message.role === 'assistant' ? 1 : 0,
     attachments: message.attachments,
+  };
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function fileToAttachment(file: File): Promise<Attachment> {
+  return {
+    type: file.type,
+    fileName: file.name,
+    url: file.type.startsWith('image/') ? await fileToBase64(file) : '',
+    key: '',
   };
 }
 
@@ -77,12 +95,7 @@ export default function SpringAiAssistant() {
     async (message: string) => {
       setChatDisabled(true);
 
-      const attachments = chatFiles.map((file) => ({
-        type: file.type,
-        fileName: file.name,
-        url: URL.createObjectURL(file),
-        key: '',
-      }));
+      const attachments = await Promise.all(chatFiles.map(fileToAttachment));
       setItems((prevMessages) => [...prevMessages, createItem({ content: message, role: 'user', attachments })]);
       setChatFiles([]);
 
