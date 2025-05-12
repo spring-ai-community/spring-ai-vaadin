@@ -73,8 +73,7 @@ export default function Chat({
       if (!item.text) {
         return {
           ...item,
-          // TODO: Once markdown is available, let's use a typing indicator
-          text: 'Waiting for response...',
+          text: `<div class="${styles.typingIndicator}"></div>`,
         };
       }
 
@@ -84,7 +83,6 @@ export default function Chat({
 
         return {
           ...item,
-          // TODO: Once markdown is available, let's add a proper file list
           text: `${attachmentText}\n${item.text}`,
         };
       }
@@ -96,7 +94,7 @@ export default function Chat({
   return (
     <div className={[className, styles.chat].join(' ')}>
       <Scroller className={styles.messageList}>
-        <MessageList items={transformedItems} />
+        <MessageList markdown items={transformedItems} />
       </Scroller>
 
       <Upload

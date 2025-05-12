@@ -15,7 +15,7 @@
     "@vaadin/hilla-react-i18n": "24.7.0-beta1",
     "@vaadin/hilla-react-signals": "24.7.0-beta1",
     "@vaadin/polymer-legacy-adapter": "24.7.0-beta1",
-    "@vaadin/react-components": "24.7.0-beta1",
+    "@vaadin/react-components": "24.8.0-alpha18",
     "@vaadin/vaadin-development-mode-detector": "2.0.7",
     "@vaadin/vaadin-lumo-styles": "24.7.0-beta1",
     "@vaadin/vaadin-material-styles": "24.7.0-beta1",
@@ -123,7 +123,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "1d0a93a3ef588be4c56baf38b5d2cf2674b3b8caf441663966fbe55ad9094d78"
+    "hash": "66b8000993f82e58d11385381188abd1b72b316ad58545b23d5798a853079b46"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",

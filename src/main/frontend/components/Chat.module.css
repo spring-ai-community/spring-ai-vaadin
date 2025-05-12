@@ -24,47 +24,45 @@
   padding: 0;
 }
 
-/* Use with <div className={styles.typingIndicator}></div> once Markdown is available */
 .typingIndicator {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: transparent;
   position: relative;
-  margin: 0 auto;
   animation: typing 1.2s infinite ease-in-out;
 }
 
 @keyframes typing {
   0% {
     box-shadow:
-      -16px 6px 0 rgba(85, 85, 85, 0.3),
       0 6px 0 rgba(85, 85, 85, 0.3),
-      16px 6px 0 rgba(85, 85, 85, 0.3);
+      16px 6px 0 rgba(85, 85, 85, 0.3),
+      32px 6px 0 rgba(85, 85, 85, 0.3);
   }
   15% {
     box-shadow:
-      -16px 6px 0 rgba(85, 85, 85, 1),
-      0 6px 0 rgba(85, 85, 85, 0.3),
-      16px 6px 0 rgba(85, 85, 85, 0.3);
+      0 6px 0 rgba(85, 85, 85, 1),
+      16px 6px 0 rgba(85, 85, 85, 0.3),
+      32px 6px 0 rgba(85, 85, 85, 0.3);
   }
   30% {
     box-shadow:
-      -16px 6px 0 rgba(85, 85, 85, 0.3),
-      0 6px 0 rgba(85, 85, 85, 1),
-      16px 6px 0 rgba(85, 85, 85, 0.3);
+      0 6px 0 rgba(85, 85, 85, 0.3),
+      16px 6px 0 rgba(85, 85, 85, 1),
+      32px 6px 0 rgba(85, 85, 85, 0.3);
   }
   45% {
     box-shadow:
-      -16px 6px 0 rgba(85, 85, 85, 0.3),
       0 6px 0 rgba(85, 85, 85, 0.3),
-      16px 6px 0 rgba(85, 85, 85, 1);
+      16px 6px 0 rgba(85, 85, 85, 0.3),
+      32px 6px 0 rgba(85, 85, 85, 1);
   }
   60%,
   100% {
     box-shadow:
-      -16px 6px 0 rgba(85, 85, 85, 0.3),
       0 6px 0 rgba(85, 85, 85, 0.3),
-      16px 6px 0 rgba(85, 85, 85, 0.3);
+      16px 6px 0 rgba(85, 85, 85, 0.3),
+      32px 6px 0 rgba(85, 85, 85, 0.3);
   }
 }
