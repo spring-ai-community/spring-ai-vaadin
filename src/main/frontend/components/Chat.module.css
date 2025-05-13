@@ -9,6 +9,17 @@
   scroll-snap-type: y proximity;
 }
 
+.messageList vaadin-message:has([name='Assistant']):last-of-type {
+  opacity: 0;
+  animation: waiting-message-fade-in 1s forwards 1s;
+}
+
+@keyframes waiting-message-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
 .messageList::after {
   display: block;
   content: '';
