@@ -3,15 +3,17 @@ package org.spring.framework.ai.vaadin.service;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 import com.vaadin.hilla.exception.EndpointException;
+import io.modelcontextprotocol.client.McpSyncClient;
 import jakarta.annotation.Nullable;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.content.Media;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.model.Media;
+import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -26,9 +28,6 @@ import reactor.core.publisher.Flux;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
-import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 // A service class that can be called from the browser
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
@@ -46,7 +45,8 @@ public class Assistant {
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
     private final AttachmentService attachmentService;
-    private final ToolCallbackProvider tools;
+    private final List<McpSyncClient> mcpSyncClients;
+
     private static final String DEFAULT_SYSTEM = """
         You are an expert on all things Java and Spring related.
         Answer questions in a friendly manner and give clear explanations.
@@ -63,11 +63,11 @@ public class Assistant {
         ChatClient.Builder builder,
         AttachmentService attachmentService,
         VectorStore vectorStore,
-        ToolCallbackProvider tools
+        List<McpSyncClient> mcpSyncClients
     ) {
         this.chatMemory = chatMemory;
         this.attachmentService = attachmentService;
-        this.tools = tools;
+        this.mcpSyncClients = mcpSyncClients;
 
         chatClient = builder
             .defaultAdvisors(
@@ -76,7 +76,7 @@ public class Assistant {
                 new SafeGuardAdvisor(List.of("PHP")),
 
                 // Remember the conversation
-                new MessageChatMemoryAdvisor(chatMemory),
+                MessageChatMemoryAdvisor.builder(chatMemory).build(),
 
                 // Define RAG pipeline
                 // See https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html#modules
@@ -119,12 +119,11 @@ public class Assistant {
                 u.media(processedAttachments.mediaList().toArray(Media[]::new));
             })
             .advisors(a -> {
-                a.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId);
-                a.param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20);
+                a.param(ChatMemory.CONVERSATION_ID, chatId);
             });
 
         if (options.useMcp) {
-            prompt.tools(tools);
+            prompt.toolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClients));
         }
 
         return prompt.stream().content();
@@ -146,7 +145,7 @@ public class Assistant {
     }
 
     public List<Message> getHistory(String chatId) {
-        return chatMemory.get(chatId, 100).stream()
+        return chatMemory.get(chatId).stream()
             .filter(message -> message.getMessageType().equals(MessageType.USER) || message.getMessageType().equals(MessageType.ASSISTANT))
             // TODO: Add attachments
             .map(message -> new Message(message.getMessageType().toString().toLowerCase(), message.getText(), List.of()))
