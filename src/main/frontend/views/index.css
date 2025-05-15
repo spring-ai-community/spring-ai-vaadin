@@ -23,23 +23,8 @@ html {
     flex-direction: column;
     padding: var(--lumo-space-s);
 
-    .chat-header {
-      display: flex;
-      gap: var(--lumo-space-s);
-      padding: 0 var(--lumo-space-m);
-      align-items: center;
-
-      .chat-heading {
-        display: flex;
-        flex-grow: 1;
-        align-items: center;
-        gap: var(--lumo-space-m);
-        font-size: var(--lumo-font-size-l);
-      }
-    }
-
-    .vaadin-chat-component {
-      flex-grow: 1;
+    .chat-component {
+      flex: 1;
     }
 
     @media (max-width: 1024px) {
@@ -50,22 +35,8 @@ html {
   }
 
   .settings-panel {
-    display: flex;
-    flex-direction: column;
-    gap: var(--lumo-space-m);
-    padding: var(--lumo-space-m);
-    overflow-y: scroll;
+    min-width: 400px;
     border-left: 1px solid var(--lumo-contrast-20pct);
-
-    .settings-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .settings-sub-heading {
-      font-size: var(--lumo-font-size-m);
-    }
 
     @media (max-width: 1024px) {
       width: 100%;
