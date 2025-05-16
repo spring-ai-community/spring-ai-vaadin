@@ -73,7 +73,7 @@ export default function Chat({
       if (!item.text) {
         return {
           ...item,
-          text: `<div class="${styles.typingIndicator}"></div>`,
+          text: `<div class="typing-indicator ${styles.typingIndicator}"></div>`,
         };
       }
 

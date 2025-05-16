@@ -9,7 +9,7 @@
   scroll-snap-type: y proximity;
 }
 
-.messageList vaadin-message:has([name='Assistant']):last-of-type {
+.messageList vaadin-message:has([class*='typing-indicator']) {
   opacity: 0;
   animation: waiting-message-fade-in 1s forwards 1s;
 }
@@ -37,6 +37,7 @@
 }
 
 .typingIndicator {
+  margin: 6px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
