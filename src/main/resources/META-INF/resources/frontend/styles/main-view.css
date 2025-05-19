@@ -1,0 +1,4 @@
+/* Main View Layout */
+.settings-panel {
+  border-left: 1px solid var(--lumo-contrast-10pct);
+}

@@ -18,16 +18,12 @@ import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugment
 import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.MimeType;
-import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 // A service class that can be called from the browser
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
@@ -44,7 +40,6 @@ public class Assistant {
 
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
-    private final AttachmentService attachmentService;
     private final List<McpSyncClient> mcpSyncClients;
 
     private static final String DEFAULT_SYSTEM = """
@@ -61,12 +56,10 @@ public class Assistant {
     public Assistant(
         ChatMemory chatMemory,
         ChatClient.Builder builder,
-        AttachmentService attachmentService,
         VectorStore vectorStore,
         List<McpSyncClient> mcpSyncClients
     ) {
         this.chatMemory = chatMemory;
-        this.attachmentService = attachmentService;
         this.mcpSyncClients = mcpSyncClients;
 
         chatClient = builder
@@ -103,14 +96,14 @@ public class Assistant {
             .build();
     }
 
-    public Flux<String> stream(String chatId, String userMessage, @Nullable ChatOptions options) {
+    public Flux<String> stream(String chatId, String userMessage, List<AttachmentFile> attachments, @Nullable ChatOptions options) {
         if (options == null) {
             options = defaultOptions;
         }
 
         var system = options.systemMessage().isBlank() ? DEFAULT_SYSTEM : options.systemMessage();
 
-        var processedAttachments = processAttachments(chatId);
+        var processedAttachments = processAttachments(attachments);
 
         var prompt = chatClient.prompt()
             .system(system)
@@ -129,21 +122,6 @@ public class Assistant {
         return prompt.stream().content();
     }
 
-    public String uploadAttachment(String chatId, MultipartFile file) {
-        AttachmentFile attachment = null;
-        try {
-            attachment = new AttachmentFile(UUID.randomUUID().toString(), file.getOriginalFilename(), file.getContentType(), file.getBytes());
-        } catch (IOException e) {
-            throw new EndpointException("Failed to read file", e);
-        }
-        attachmentService.addAttachment(chatId, attachment);
-        return attachment.id();
-    }
-
-    public void removeAttachment(String chatId, String attachmentId) {
-        attachmentService.removeAttachment(chatId, attachmentId);
-    }
-
     public List<Message> getHistory(String chatId) {
         return chatMemory.get(chatId).stream()
             .filter(message -> message.getMessageType().equals(MessageType.USER) || message.getMessageType().equals(MessageType.ASSISTANT))
@@ -159,10 +137,7 @@ public class Assistant {
     private record ProcessedAttachments(String documentContent, List<Media> mediaList) {
     }
 
-    private ProcessedAttachments processAttachments(String chatId) {
-        var attachments = attachmentService.getAttachments(chatId);
-        attachmentService.clearAttachments(chatId);
-
+    private ProcessedAttachments processAttachments(List<AttachmentFile> attachments) {
         // Map text and pdf attachments as documents wrapped in <attachment> tags
         var documentList = attachments.stream()
             .filter(attachment -> attachment.contentType().contains("text") || attachment.contentType().contains("pdf"))
@@ -186,7 +161,7 @@ public class Assistant {
         return new ProcessedAttachments(documentBuilder.toString(), mediaList);
     }
 
-    record Attachment(String type, String key, String fileName, String url) {}
+    public static record Attachment(String type, String key, String fileName, String url) {}
 
-    record Message(String role, String content, @Nullable List<Attachment> attachments) {}
+    public static record Message(String role, String content, @Nullable List<Attachment> attachments) {}
 }

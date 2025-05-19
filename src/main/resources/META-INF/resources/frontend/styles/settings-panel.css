@@ -1,0 +1,11 @@
+/* Settings Panel Styles */
+.settings-panel {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
