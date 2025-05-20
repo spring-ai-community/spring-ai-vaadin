@@ -2,7 +2,6 @@ package org.spring.framework.ai.vaadin.ui.component;
 
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
-import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -10,8 +9,14 @@ import com.vaadin.flow.server.streams.UploadHandler;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import org.spring.framework.ai.vaadin.ui.component.ChatMessage.ChatAttachment;
 import org.spring.framework.ai.vaadin.ui.util.ImageUtils;
 
+/**
+ * A chat component that provides message list, input field, and file upload functionality. This
+ * component is used for interactions between user and AI assistant. Supports text messaging in
+ * Markdown and file attachments.
+ */
 public class Chat extends VerticalLayout {
   private static final int MAX_FILE_COUNT = 10;
   private static final int MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -55,7 +60,7 @@ public class Chat extends VerticalLayout {
     upload.addFileRemovedListener(
         event -> {
           var fileName = event.getFileName();
-          pendingAttachments.removeIf(attachment -> attachment.fileName.equals(fileName));
+          pendingAttachments.removeIf(attachment -> attachment.fileName().equals(fileName));
         });
 
     upload.addClassName("chat-upload");
@@ -83,10 +88,12 @@ public class Chat extends VerticalLayout {
     add(upload);
   }
 
+  /** Clears all messages from the chat. */
   public void clearMessages() {
     messageList.setItems(new ArrayList<>());
   }
 
+  /** Sets focus to the message input field. */
   public void focusInput() {
     messageInput.focus();
   }
@@ -114,88 +121,22 @@ public class Chat extends VerticalLayout {
     upload.clearFileList();
   }
 
+  /**
+   * Sets the listener for chat message submissions.
+   *
+   * @param listener The listener to be notified when a message is submitted
+   */
   public void setSubmitListener(ChatSubmitListener listener) {
     this.chatSubmitListener = listener;
-  }
-
-  public static record ChatAttachment(String type, String fileName, byte[] data, String url) {}
-
-  public static class ChatMessage {
-    private List<ChatAttachment> attachments;
-    private MessageListItem messageListItem = new MessageListItem();
-    private final String TYPING_INDICATOR = "<div class='typing-indicator'></div>";
-
-    public ChatMessage(String role, String content, List<ChatAttachment> attachments) {
-      var contentBuilder = new StringBuilder();
-
-      if (attachments != null) {
-        // Format message attachments attachments as thumbnails in HTML
-        var attachmentsBuilder = new StringBuilder("<div class='attachments'>");
-
-        for (var attachment : attachments) {
-          var isImage = attachment.type.startsWith("image/");
-          attachmentsBuilder.append("<div class='attachment' title='" + attachment.fileName + "'>");
-          if (isImage) {
-            attachmentsBuilder.append(
-                "<img src='"
-                    + attachment.url
-                    + "' alt='"
-                    + attachment.fileName
-                    + "' class='attachment-image' />");
-          } else {
-            attachmentsBuilder.append("<div class='attachment-icon'>📄</div>");
-          }
-          ;
-          attachmentsBuilder.append(
-              "<span class='attachment-name'>" + attachment.fileName + "</span>");
-          attachmentsBuilder.append("</div>");
-        }
-
-        attachmentsBuilder.append("</div>");
-        contentBuilder.append(attachmentsBuilder);
-      }
-      if (content != null) {
-        // Append the message text content
-        contentBuilder.append(content);
-      }
-
-      if (contentBuilder.isEmpty()) {
-        // If no content, show typing indicator
-        contentBuilder.append(TYPING_INDICATOR);
-      }
-
-      messageListItem.setText(contentBuilder.toString());
-      messageListItem.setUserName(role);
-      this.attachments = attachments;
-    }
-
-    public String getRole() {
-      return messageListItem.getUserName();
-    }
-
-    public String getContent() {
-      return messageListItem.getText();
-    }
-
-    public void appendText(String text) {
-      if (messageListItem.getText().equals(TYPING_INDICATOR)) {
-        messageListItem.setText("");
-      }
-      messageListItem.appendText(text);
-    }
-
-    public List<ChatAttachment> getAttachments() {
-      return attachments;
-    }
   }
 
   /**
    * Sets the messages to display in the chat.
    *
-   * @param list List of chat messages to display
+   * @param messages List of chat messages to display
    */
-  public void setMessages(List<ChatMessage> list) {
-    messageList.setItems(list.stream().map(m -> m.messageListItem).toList());
+  public void setMessages(List<ChatMessage> messages) {
+    messageList.setItems(messages.stream().map(message -> message.messageListItem).toList());
   }
 
   /** Listener interface for chat message submissions. */

@@ -11,11 +11,15 @@ import org.spring.framework.ai.vaadin.service.Assistant.Message;
 import org.spring.framework.ai.vaadin.service.AttachmentFile;
 import org.spring.framework.ai.vaadin.service.RagContextService;
 import org.spring.framework.ai.vaadin.ui.component.Chat;
-import org.spring.framework.ai.vaadin.ui.component.Chat.ChatAttachment;
-import org.spring.framework.ai.vaadin.ui.component.Chat.ChatMessage;
 import org.spring.framework.ai.vaadin.ui.component.ChatHeader;
+import org.spring.framework.ai.vaadin.ui.component.ChatMessage;
+import org.spring.framework.ai.vaadin.ui.component.ChatMessage.ChatAttachment;
 import org.spring.framework.ai.vaadin.ui.component.SettingsPanel;
 
+/**
+ * Main view for the Spring AI Assistant application. Provides a chat interface with settings panel
+ * in a master-detail layout.
+ */
 @Route("")
 @PageTitle("Spring AI Assistant")
 public class MainView extends MasterDetailLayout {
@@ -71,31 +75,38 @@ public class MainView extends MasterDetailLayout {
 
     var options = new ChatOptions(settingsPanel.getSystemMessage(), settingsPanel.isUseMcp());
     var attachmentFiles =
-        userMessage.getAttachments().stream().map(this::chatAttahcmentToAttachmentFile).toList();
+        userMessage.getAttachments().stream().map(this::chatAttachmentToAttachmentFile).toList();
 
     var ui = getUI().get();
-    assistant.stream(chatId, userMessage.getContent(), attachmentFiles, options)
+    assistant.stream(chatId, userMessage.getText(), attachmentFiles, options)
         .subscribe(
-            (token) -> {
-              ui.access(() -> assistantMessage.appendText(token));
-            },
-            (error) -> {
-              ui.access(() -> chat.setEnabled(true));
-            },
-            () -> {
-              ui.access(
-                  () -> {
-                    chat.setEnabled(true);
-                    chat.focusInput();
-                  });
-            });
+            // On next token
+            token -> ui.access(() -> assistantMessage.appendText(token)),
+
+            // On error
+            error -> ui.access(() -> chat.setEnabled(true)),
+
+            // On complete
+            () ->
+                ui.access(
+                    () -> {
+                      chat.setEnabled(true);
+                      chat.focusInput();
+                    }));
   }
 
+  /** Loads the chat history for the current chat ID. */
   private void loadChatHistory() {
     var history = assistant.getHistory(chatId);
-    chat.setMessages(history.stream().map(m -> messageToChatMessage(m)).toList());
+    chat.setMessages(history.stream().map(this::messageToChatMessage).toList());
   }
 
+  /**
+   * Converts an Assistant Message to a ChatMessage for UI display.
+   *
+   * @param message The Assistant message to convert
+   * @return The corresponding ChatMessage for UI
+   */
   private ChatMessage messageToChatMessage(Message message) {
     return new ChatMessage(
         message.role(),
@@ -105,22 +116,25 @@ public class MainView extends MasterDetailLayout {
             .toList());
   }
 
-  private AttachmentFile chatAttahcmentToAttachmentFile(ChatAttachment chatAttachment) {
+  /**
+   * Converts a ChatAttachment to an AttachmentFile.
+   *
+   * @param chatAttachment The chat attachment to convert
+   * @return The corresponding AttachmentFile
+   */
+  private AttachmentFile chatAttachmentToAttachmentFile(ChatAttachment chatAttachment) {
     return new AttachmentFile(
         chatAttachment.fileName(), chatAttachment.type(), chatAttachment.data());
   }
 
+  /** Resets the chat by closing the current session and creating a new one. */
   private void resetChat() {
-    // Close the current chat
     assistant.closeChat(chatId);
-
-    // Generate a new chat ID
     chatId = UUID.randomUUID().toString();
-
-    // Clear message list
     chat.clearMessages();
   }
 
+  /** Toggles the visibility of the settings panel. */
   private void toggleSettings() {
     setDetail(getDetail() == null ? settingsPanel : null);
   }
