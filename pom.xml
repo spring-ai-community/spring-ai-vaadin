@@ -31,7 +31,7 @@
 		<java.version>21</java.version>
 		<spring-ai.version>1.0.0-RC1</spring-ai.version>
 		<vaadin.version>24.8.0.alpha7</vaadin.version>
-		<spotless.version>2.43.0</spotless.version>
+		<spotless.version>2.44.4</spotless.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -100,6 +100,7 @@
 							<!-- This is the standard import order -->
 							<order>java,javax,org,com,</order>
 						</importOrder>
+						<endWithNewline />
 						<removeUnusedImports />
 						<!-- Apply Google Java Style -->
 						<googleJavaFormat>
@@ -120,14 +121,6 @@
 						</format>
 					</formats>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-						<phase>compile</phase>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
