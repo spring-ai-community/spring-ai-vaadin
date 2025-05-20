@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Chat extends VerticalLayout {
+  private static final int MAX_FILE_COUNT = 10;
+  private static final int MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  private static final String[] ACCEPTED_FILE_TYPES = {"image/*", "text/*", "application/pdf"};
 
   private final Upload upload;
   private final MessageInput messageInput;
@@ -52,9 +55,9 @@ public class Chat extends VerticalLayout {
 
     upload.addClassName("chat-upload");
     upload.setWidthFull();
-    upload.setMaxFiles(10);
-    upload.setMaxFileSize(10 * 1024 * 1024);
-    upload.setAcceptedFileTypes("image/*", "text/*", "application/pdf");
+    upload.setMaxFiles(MAX_FILE_COUNT);
+    upload.setMaxFileSize(MAX_FILE_SIZE);
+    upload.setAcceptedFileTypes(ACCEPTED_FILE_TYPES);
 
     // Create message input
     messageInput = new MessageInput();
@@ -62,10 +65,7 @@ public class Chat extends VerticalLayout {
     messageInput.setWidthFull();
 
     // Set up message sending
-    messageInput.addSubmitListener(
-        event -> {
-          sendMessage(event.getValue());
-        });
+    messageInput.addSubmitListener(event -> sendMessage(event.getValue()));
 
     // Layout components
     var scroller = new Scroller(messageList);
@@ -82,6 +82,12 @@ public class Chat extends VerticalLayout {
     messageList.setItems(new ArrayList<>());
   }
 
+  /**
+   * Sends a new message in the chat. Creates both a user message and an assistant message
+   * placeholder.
+   *
+   * @param message The message content to send
+   */
   private void sendMessage(String message) {
     if (!isEnabled() || message.isEmpty()) {
       return;
@@ -174,11 +180,23 @@ public class Chat extends VerticalLayout {
     }
   }
 
+  /**
+   * Sets the messages to display in the chat.
+   *
+   * @param list List of chat messages to display
+   */
   public void setMessages(List<ChatMessage> list) {
     messageList.setItems(list.stream().map(m -> m.messageListItem).toList());
   }
 
+  /** Listener interface for chat message submissions. */
   public interface ChatSubmitListener {
-    void onSubmit(ChatMessage userMmessage, ChatMessage assistantMessage);
+    /**
+     * Called when a user submits a message.
+     *
+     * @param userMessage The message sent by the user
+     * @param assistantMessage The message placeholder for the assistant's response
+     */
+    void onSubmit(ChatMessage userMessage, ChatMessage assistantMessage);
   }
 }
