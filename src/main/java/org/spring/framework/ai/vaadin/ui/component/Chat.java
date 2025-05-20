@@ -87,6 +87,10 @@ public class Chat extends VerticalLayout {
     messageList.setItems(new ArrayList<>());
   }
 
+  public void focusInput() {
+    messageInput.focus();
+  }
+
   /**
    * Sends a new message in the chat. Creates both a user message and an assistant message
    * placeholder.

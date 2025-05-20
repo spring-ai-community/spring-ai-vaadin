@@ -67,7 +67,10 @@ public class MainView extends MasterDetailLayout {
                     getUI().get().access(() -> chat.setEnabled(true));
                   },
                   () -> {
-                    getUI().get().access(() -> chat.setEnabled(true));
+                    getUI().get().access(() -> {
+                      chat.setEnabled(true);
+                      chat.focusInput();
+                    });
                   });
         });
 
