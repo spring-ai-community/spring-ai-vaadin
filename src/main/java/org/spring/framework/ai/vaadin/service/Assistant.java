@@ -1,7 +1,5 @@
 package org.spring.framework.ai.vaadin.service;
 
-import com.vaadin.flow.server.auth.AnonymousAllowed;
-import com.vaadin.hilla.BrowserCallable;
 import io.modelcontextprotocol.client.McpSyncClient;
 import jakarta.annotation.Nullable;
 import java.util.List;
@@ -20,13 +18,13 @@ import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 import reactor.core.publisher.Flux;
 
+@Service
 // A service class that can be called from the browser
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
-@BrowserCallable
-@AnonymousAllowed
 public class Assistant {
   public record ChatOptions(String systemMessage, boolean useMcp) {}
 

@@ -16,7 +16,6 @@ import org.spring.framework.ai.vaadin.ui.component.Chat.ChatAttachment;
 import org.spring.framework.ai.vaadin.ui.component.Chat.ChatMessage;
 import org.spring.framework.ai.vaadin.ui.component.ChatHeader;
 import org.spring.framework.ai.vaadin.ui.component.SettingsPanel;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("")
 @PageTitle("Spring AI Assistant")
@@ -29,7 +28,7 @@ public class MainView extends MasterDetailLayout {
   private String chatId;
   private ChatOptions options = new ChatOptions("", false);
 
-  public MainView(@Autowired Assistant assistant, @Autowired RagContextService ragContextService) {
+  public MainView(Assistant assistant, RagContextService ragContextService) {
     this.assistant = assistant;
     this.chatId = UUID.randomUUID().toString();
 
