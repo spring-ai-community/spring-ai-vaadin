@@ -3,7 +3,6 @@ package org.spring.framework.ai.vaadin.ui.component;
 import com.vaadin.flow.component.messages.MessageListItem;
 import java.util.List;
 
-
 public class ChatMessage {
   private List<ChatAttachment> attachments;
   MessageListItem messageListItem = new MessageListItem();

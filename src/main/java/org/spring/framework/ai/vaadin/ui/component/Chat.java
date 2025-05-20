@@ -38,25 +38,7 @@ public class Chat extends VerticalLayout {
     messageList.addClassName("message-list");
 
     // Create upload component
-    upload =
-        new Upload(
-            UploadHandler.inMemory(
-                (meta, data) -> {
-                  var isImage = meta.contentType().startsWith("image/");
-                  if (isImage) {
-                    // Create thumbnail before encoding to Base64
-                    var thumbnailData =
-                        ImageUtils.createThumbnail(data, meta.contentType(), 160, 140);
-                    var base64 = Base64.getEncoder().encodeToString(thumbnailData);
-                    var dataUrl = "data:" + meta.contentType() + ";base64," + base64;
-                    pendingAttachments.add(
-                        new ChatAttachment(meta.contentType(), meta.fileName(), data, dataUrl));
-                  } else {
-                    pendingAttachments.add(
-                        new ChatAttachment(meta.contentType(), meta.fileName(), data, ""));
-                  }
-                }));
-
+    upload = new Upload(createUploadHandler());
     upload.addFileRemovedListener(
         event -> {
           var fileName = event.getFileName();
@@ -88,9 +70,33 @@ public class Chat extends VerticalLayout {
     add(upload);
   }
 
+  private UploadHandler createUploadHandler() {
+    return UploadHandler.inMemory(
+        (meta, data) -> {
+          var url = "";
+          if (meta.contentType().startsWith("image/")) {
+            // Create thumbnail before encoding to Base64 data URL
+            var thumbnailData = ImageUtils.createThumbnail(data, meta.contentType(), 160, 140);
+            var base64 = Base64.getEncoder().encodeToString(thumbnailData);
+            url = "data:" + meta.contentType() + ";base64," + base64;
+          }
+          pendingAttachments.add(
+              new ChatAttachment(meta.contentType(), meta.fileName(), data, url));
+        });
+  }
+
   /** Clears all messages from the chat. */
   public void clearMessages() {
     messageList.setItems(new ArrayList<>());
+  }
+
+  /**
+   * Sets the messages to display in the chat.
+   *
+   * @param messages List of chat messages to display
+   */
+  public void setMessages(List<ChatMessage> messages) {
+    messageList.setItems(messages.stream().map(message -> message.messageListItem).toList());
   }
 
   /** Sets focus to the message input field. */
@@ -128,15 +134,6 @@ public class Chat extends VerticalLayout {
    */
   public void setSubmitListener(ChatSubmitListener listener) {
     this.chatSubmitListener = listener;
-  }
-
-  /**
-   * Sets the messages to display in the chat.
-   *
-   * @param messages List of chat messages to display
-   */
-  public void setMessages(List<ChatMessage> messages) {
-    messageList.setItems(messages.stream().map(message -> message.messageListItem).toList());
   }
 
   /** Listener interface for chat message submissions. */

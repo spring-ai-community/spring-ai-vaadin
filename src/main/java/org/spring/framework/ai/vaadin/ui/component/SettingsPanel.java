@@ -69,22 +69,7 @@ public class SettingsPanel extends VerticalLayout {
     filesList = new UnorderedList();
 
     // File upload
-    upload =
-        new Upload(
-            UploadHandler.inMemory(
-                (meta, data) -> {
-                  try {
-                    // Upload file to RAG context
-                    ragContextService.addFileToContext(
-                        new CustomMultipartFile(meta.fileName(), meta.contentType(), data));
-
-                    // Update the files list
-                    getUI().get().access(() -> updateFilesList());
-
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                  }
-                }));
+    upload = new Upload(createUploadHandler());
     upload.setMaxFiles(10);
     upload.setMaxFileSize(10 * 1024 * 1024);
     upload.setAcceptedFileTypes(".txt", ".pdf", ".md", ".doc", ".docx");
@@ -100,6 +85,23 @@ public class SettingsPanel extends VerticalLayout {
         upload);
 
     updateFilesList();
+  }
+
+  private UploadHandler createUploadHandler() {
+    return UploadHandler.inMemory(
+        (meta, data) -> {
+          try {
+            // Upload file to RAG context
+            ragContextService.addFileToContext(
+                new CustomMultipartFile(meta.fileName(), meta.contentType(), data));
+
+            // Update the files list
+            getUI().get().access(() -> updateFilesList());
+
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   public Registration addCloseListener(ComponentEventListener<ClickEvent<Button>> listener) {
