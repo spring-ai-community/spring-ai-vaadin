@@ -4,7 +4,6 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.ListItem;
@@ -21,7 +20,6 @@ import com.vaadin.flow.shared.Registration;
 import org.spring.framework.ai.vaadin.service.RagContextService;
 import org.spring.framework.ai.vaadin.ui.util.CustomMultipartFile;
 
-@CssImport("./styles/settings-panel.css")
 public class SettingsPanel extends VerticalLayout {
 
   private final RagContextService ragContextService;

@@ -15,8 +15,3 @@ declare module 'csstype' {
     [index: `--${string}`]: any;
   }
 }
-
-declare module '*.svg?url' {
-  const value: string;
-  export = value;
-}

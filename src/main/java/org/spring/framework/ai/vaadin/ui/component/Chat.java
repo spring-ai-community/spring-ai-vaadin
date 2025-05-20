@@ -1,6 +1,5 @@
 package org.spring.framework.ai.vaadin.ui.component;
 
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
@@ -11,7 +10,6 @@ import com.vaadin.flow.server.streams.UploadHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-@CssImport("./styles/chat.css")
 public class Chat extends VerticalLayout {
 
   private final Upload upload;

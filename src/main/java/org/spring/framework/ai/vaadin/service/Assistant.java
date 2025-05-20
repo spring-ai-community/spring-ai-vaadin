@@ -22,9 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 import reactor.core.publisher.Flux;
 
-@Service
 // A service class that can be called from the browser
 // https://vaadin.com/docs/latest/hilla/guides/endpoints
+@Service
 public class Assistant {
   public record ChatOptions(String systemMessage, boolean useMcp) {}
 

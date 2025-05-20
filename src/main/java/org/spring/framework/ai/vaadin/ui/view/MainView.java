@@ -1,6 +1,5 @@
 package org.spring.framework.ai.vaadin.ui.view;
 
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.masterdetaillayout.MasterDetailLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -19,7 +18,6 @@ import org.spring.framework.ai.vaadin.ui.component.SettingsPanel;
 
 @Route("")
 @PageTitle("Spring AI Assistant")
-@CssImport("./styles/main-view.css")
 public class MainView extends MasterDetailLayout {
 
   private final Chat chat;

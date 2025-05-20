@@ -16,7 +16,6 @@
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
     "lit": "3.3.0",
-    "mermaid": "^11.4.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router": "7.5.2"
@@ -85,7 +84,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "48b2111f0590662ab448503ccb5445b93f46e49c4b7daa4a9abd10d9c00b3241"
+    "hash": "d5673df2f1911f62b78f1dd996896c52e036aaff0cfd7a7452e422b87e650f15"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -95,19 +94,20 @@
     "@vaadin/react-components": "$@vaadin/react-components",
     "@vaadin/common-frontend": "$@vaadin/common-frontend",
     "react-dom": "$react-dom",
-    "react": "$react",
     "construct-style-sheets-polyfill": "$construct-style-sheets-polyfill",
     "lit": "$lit",
     "@polymer/polymer": "$@polymer/polymer",
+    "react": "$react",
+    "react-router": "$react-router",
     "date-fns": "$date-fns",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
-    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
-    "react-router": "$react-router",
-    "mermaid": "$mermaid"
+    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,scss,md}": [ "prettier --write" ]
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "scripts": {
     "prepare": "husky",
