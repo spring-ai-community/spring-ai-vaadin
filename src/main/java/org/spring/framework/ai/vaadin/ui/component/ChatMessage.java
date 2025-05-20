@@ -48,6 +48,7 @@ public class ChatMessage {
     }
 
     messageListItem.setText(contentBuilder.toString());
+    messageListItem.setUserColorIndex(role.equals("User") ? 0 : 1);
     messageListItem.setUserName(role);
     this.attachments = attachments;
   }
