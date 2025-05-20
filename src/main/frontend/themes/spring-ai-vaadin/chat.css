@@ -10,14 +10,14 @@
   scroll-snap-type: y proximity;
 }
 
-.chat-scroller vaadin-message:has([class*='typing-indicator']) {
+.chat-scroller vaadin-message:has([class*="typing-indicator"]) {
   opacity: 0;
   animation: waiting-message-fade-in 1s forwards 1s;
 }
 
 .chat-scroller::after {
   display: block;
-  content: '';
+  content: "";
   scroll-snap-align: end;
   min-height: 1px;
 }
