@@ -29,7 +29,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<spring-ai.version>1.0.0-RC1</spring-ai.version>
+		<spring-ai.version>1.0.0</spring-ai.version>
 		<vaadin.version>24.8.0.alpha7</vaadin.version>
 		<spotless.version>2.44.4</spotless.version>
 	</properties>
