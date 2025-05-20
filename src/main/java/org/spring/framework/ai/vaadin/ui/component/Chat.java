@@ -8,7 +8,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.server.streams.UploadHandler;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import org.spring.framework.ai.vaadin.ui.util.ImageUtils;
 
 public class Chat extends VerticalLayout {
   private static final int MAX_FILE_COUNT = 10;
@@ -37,7 +39,10 @@ public class Chat extends VerticalLayout {
                 (meta, data) -> {
                   var isImage = meta.contentType().startsWith("image/");
                   if (isImage) {
-                    var base64 = java.util.Base64.getEncoder().encodeToString(data);
+                    // Create thumbnail before encoding to Base64
+                    var thumbnailData =
+                        ImageUtils.createThumbnail(data, meta.contentType(), 160, 140);
+                    var base64 = Base64.getEncoder().encodeToString(thumbnailData);
                     var dataUrl = "data:" + meta.contentType() + ";base64," + base64;
                     pendingAttachments.add(
                         new ChatAttachment(meta.contentType(), meta.fileName(), data, dataUrl));
