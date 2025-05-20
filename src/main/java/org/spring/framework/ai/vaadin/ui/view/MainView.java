@@ -24,7 +24,6 @@ public class MainView extends MasterDetailLayout {
   private final SettingsPanel settingsPanel;
   private final Assistant assistant;
   private String chatId;
-  private ChatOptions options = new ChatOptions("", false);
 
   public MainView(Assistant assistant, RagContextService ragContextService) {
     this.assistant = assistant;
@@ -50,29 +49,7 @@ public class MainView extends MasterDetailLayout {
     this.chat = new Chat();
     chat.addClassName("chat-component");
     chat.setSizeFull();
-    chat.setSubmitListener(
-        (ChatMessage userMessage, ChatMessage assistantMessage) -> {
-          chat.setEnabled(false);
-          options = new ChatOptions(settingsPanel.getSystemMessage(), settingsPanel.isUseMcp());
-          var attachmentFiles =
-              userMessage.getAttachments().stream()
-                  .map(this::chatAttahcmentToAttachmentFile)
-                  .toList();
-          assistant.stream(chatId, userMessage.getContent(), attachmentFiles, options)
-              .subscribe(
-                  (String token) -> {
-                    getUI().get().access(() -> assistantMessage.appendText(token));
-                  },
-                  (error) -> {
-                    getUI().get().access(() -> chat.setEnabled(true));
-                  },
-                  () -> {
-                    getUI().get().access(() -> {
-                      chat.setEnabled(true);
-                      chat.focusInput();
-                    });
-                  });
-        });
+    chat.setSubmitListener(this::handleSubmit);
 
     // Create chat layout
     var chatContent = new VerticalLayout(chatHeader, chat);
@@ -86,6 +63,32 @@ public class MainView extends MasterDetailLayout {
     setDetailSize("600px");
 
     loadChatHistory();
+  }
+
+  /** Handles the submit event from the chat component. */
+  private void handleSubmit(ChatMessage userMessage, ChatMessage assistantMessage) {
+    chat.setEnabled(false);
+
+    var options = new ChatOptions(settingsPanel.getSystemMessage(), settingsPanel.isUseMcp());
+    var attachmentFiles =
+        userMessage.getAttachments().stream().map(this::chatAttahcmentToAttachmentFile).toList();
+
+    var ui = getUI().get();
+    assistant.stream(chatId, userMessage.getContent(), attachmentFiles, options)
+        .subscribe(
+            (token) -> {
+              ui.access(() -> assistantMessage.appendText(token));
+            },
+            (error) -> {
+              ui.access(() -> chat.setEnabled(true));
+            },
+            () -> {
+              ui.access(
+                  () -> {
+                    chat.setEnabled(true);
+                    chat.focusInput();
+                  });
+            });
   }
 
   private void loadChatHistory() {

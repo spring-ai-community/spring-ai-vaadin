@@ -79,7 +79,8 @@ public class SettingsPanel extends VerticalLayout {
                         new CustomMultipartFile(meta.fileName(), meta.contentType(), data));
 
                     // Update the files list
-                    updateFilesList();
+                    getUI().get().access(() -> updateFilesList());
+
                   } catch (Exception e) {
                     e.printStackTrace();
                   }
@@ -98,11 +99,7 @@ public class SettingsPanel extends VerticalLayout {
         filesList,
         upload);
 
-    addAttachListener(
-        event -> {
-          // Update the files list when the component is attached
-          updateFilesList();
-        });
+    updateFilesList();
   }
 
   public Registration addCloseListener(ComponentEventListener<ClickEvent<Button>> listener) {
@@ -110,25 +107,19 @@ public class SettingsPanel extends VerticalLayout {
   }
 
   public void updateFilesList() {
-    getUI()
-        .ifPresent(
-            ui ->
-                ui.access(
-                    () -> {
-                      var files = ragContextService.getFilesInContext();
+    var files = ragContextService.getFilesInContext();
 
-                      filesList.removeAll();
-                      upload.clearFileList();
+    filesList.removeAll();
+    upload.clearFileList();
 
-                      if (files == null || files.isEmpty()) {
-                        return;
-                      }
+    if (files == null || files.isEmpty()) {
+      return;
+    }
 
-                      for (var file : files) {
-                        var item = new ListItem(new Span(file));
-                        filesList.add(item);
-                      }
-                    }));
+    for (var file : files) {
+      var item = new ListItem(new Span(file));
+      filesList.add(item);
+    }
   }
 
   public String getSystemMessage() {
