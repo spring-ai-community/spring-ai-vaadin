@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 import reactor.core.publisher.Flux;
 
-// A service class that can be called from the browser
-// https://vaadin.com/docs/latest/hilla/guides/endpoints
 @Service
 public class Assistant {
   public record ChatOptions(String systemMessage, boolean useMcp) {}
@@ -40,6 +38,7 @@ public class Assistant {
         Answer questions in a friendly manner and give clear explanations.
         Always give example code snippets when explaining code.
         """;
+
   private static final String ATTACHMENT_TEMPLATE =
       """
         <attachment filename="%s">

@@ -10,6 +10,13 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Service for managing contextual data for Retrieval-Augmented Generation (RAG) processes.
+ * This service allows the addition of file data to a context that can be utilized for
+ * document retrieval and text processing operations.
+ *
+ * Files are managed in an in-memory list for simplicity.
+ */
 @Service
 public class RagContextService {
 
