@@ -71,6 +71,8 @@ public class MainView extends MasterDetailLayout {
 
   /** Handles the submit event from the chat component. */
   private void handleSubmit(ChatMessage userMessage, ChatMessage assistantMessage) {
+    chat.addClassName("streaming");
+
     var options = new ChatOptions(settingsPanel.getSystemMessage(), settingsPanel.isUseMcp());
     var attachmentFiles =
         userMessage.getAttachments().stream().map(this::chatAttachmentToAttachmentFile).toList();
@@ -79,7 +81,12 @@ public class MainView extends MasterDetailLayout {
     assistant.stream(chatId, userMessage.getText(), attachmentFiles, options)
         .subscribe(
             // Append to the assistantMessage as it streams
-            token -> ui.access(() -> assistantMessage.appendText(token)));
+            token -> ui.access(() -> {
+              chat.addClassName("streaming");
+              assistantMessage.appendText(token);
+            }),
+            error -> ui.access(() -> assistantMessage.appendText("Error: " + error.getMessage())),
+            () -> ui.access(() -> chat.removeClassName("streaming")));
   }
 
   /** Loads the chat history for the current chat ID. */

@@ -5,7 +5,7 @@
   overflow: hidden;
 }
 
-.chat-scroller {
+.chat.streaming .chat-scroller {
   flex: 1;
   scroll-snap-type: y proximity;
 }
