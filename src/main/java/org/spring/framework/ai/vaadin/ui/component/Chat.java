@@ -62,6 +62,7 @@ public class Chat extends VerticalLayout {
     // Layout components
     var scroller = new Scroller(messageList);
     scroller.addClassName("chat-scroller");
+    scroller.setWidthFull();
     setFlexGrow(1, scroller);
     add(scroller);
 
