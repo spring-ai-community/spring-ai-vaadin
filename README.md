@@ -1,5 +1,7 @@
 # Spring AI Vaadin
 
+📖 **[Documentation](https://springaicommunity.mintlify.app/projects/incubating/spring-ai-vaadin)**
+
 An example application that provides a Vaadin user interface for Spring AI, enabling interactive AI-powered chat experiences for Java and Spring developers.
 
 ## Overview
